@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
     <div style="text-align:center" class="content main">
     <div style="text-align:center" class="content wrapper">
       <h1>R<span style="color: #f05945">i</span>ck R<span style="color: #f05945">o</span>ll<span style="color: #f05945">e</span>d 🤭</h1>
-      <iframe width="480" height="400" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" title="Rick Rolled 🤪" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; autoplay" id="rickVid"></iframe>
+      <iframe width="40%" height="40%" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" title="Rick Rolled 🤪" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; autoplay" id="rickVid"></iframe>
       <audio autoplay loop  id="playAudio">
           <source src="https://www.myinstants.com/media/sounds/epic.mp3">
       </audio>
@@ -24,4 +24,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'kab-dev';
+
+  ngOnInit(){
+    console.log("nerd :P")
+  }
 }
