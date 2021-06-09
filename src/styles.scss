@@ -27,5 +27,6 @@ h1 {
 #rickVid {
     border: 3px dashed white;
     box-shadow: 15px 15px 3px #5eaaa8;
-    pointer-events: none;
+    max-width: 450px;
+    max-height: 500px;
 }
