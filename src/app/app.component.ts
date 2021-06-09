@@ -13,8 +13,8 @@ import { Component } from '@angular/core';
         <audio autoplay loop  id="playAudio">
             <source src="https://www.myinstants.com/media/sounds/epic.mp3">
         </audio>
-        <div style="margin-top:1%">
-          <img src="https://i.kym-cdn.com/photos/images/original/000/569/146/2c9.gif" alt="BMO Dance" style="width:15vh;height:15hv;">
+        <div style="margin-top:5%">
+          <img src="https://i.kym-cdn.com/photos/images/original/000/569/146/2c9.gif" alt="BMO Dance" id="BMO">
         </div>
       </div>
     </div>
