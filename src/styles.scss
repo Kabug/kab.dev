@@ -6,34 +6,12 @@ html{
 
 body{
     height: 100%;
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
 }
 
 h1 {
     color: #f7f3e9;
 }
-
-.main {
-    height: 100%;
-    width: 100%;
-    display: table;
-}
-
-.wrapper {
-    display: table-cell;
-    height: 100%;
-    vertical-align: middle;
-  }
-
-#rickVid {
-    border: 3px dashed white;
-    box-shadow: 15px 15px 3px #5eaaa8;
-    max-width: 450px;
-    max-height: 500px;
-}
-
-#BMO {
-    width:10vh;
-    height:10vh;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 50%;
-}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node server.js",
+    "start": "ng serve -o",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "heroku-postbuild": "ng build --prod"
@@ -11,12 +11,14 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~12.0.3",
+    "@angular/cdk": "^12.2.13",
     "@angular/cli": "~12.0.3",
     "@angular/common": "~12.0.3",
     "@angular/compiler": "~12.0.3",
     "@angular/compiler-cli": "~12.0.3",
     "@angular/core": "~12.0.3",
     "@angular/forms": "~12.0.3",
+    "@angular/material": "^12.2.13",
     "@angular/platform-browser": "~12.0.3",
     "@angular/platform-browser-dynamic": "~12.0.3",
     "@angular/router": "~12.0.3",

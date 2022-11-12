@@ -1,0 +1,47 @@
+.content {
+    text-align: center;
+}
+
+.countdown {
+    max-width: 100%;
+    min-height: 100%;
+    font-family: verdana;
+    font-weight: bold;
+    text-align: center;
+    font-size: 800px;
+    color: rgb(255, 132, 0);
+    text-shadow: rgb(0, 0, 0) 7px 7px 15px;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.wrapper {
+    display: grid;
+    vertical-align: middle;
+    justify-content: space-around;
+    min-height: 100%;
+
+    .vowel {
+        color: #f05945
+    }
+    
+    .rickVid {
+        border: 3px solid  white;
+        // box-shadow: 15px 15px 3px #5eaaa8;
+        max-width: 450px;
+        max-height: 500px;
+    }
+
+    .bmoContainer {
+        align-self: end;
+        #BMO {
+            width:10vh;
+            height:10vh;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+        }
+    }
+}

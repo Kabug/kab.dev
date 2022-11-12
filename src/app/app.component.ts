@@ -1,35 +1,57 @@
 import { Component } from '@angular/core';
+import {
+  trigger,
+  style,
+  animate,
+  transition
+} from '@angular/animations';
 
 //https://colorhunt.co/palette/273948
 
+const enterTransition = transition(':enter', [
+  style({ opacity: 0, }),
+  animate('1s ease-in', style({ width: 1000 })),
+]);
+
+const exitTransition = transition(':leave', [
+  style({
+    opacity: 1,
+  }),
+  animate('1s ease-out', style({ width: 800
+  })),
+])
+
+const fadeIn = trigger('fadeIn', [enterTransition]);
+const fadeOut = trigger('fadeOut', [exitTransition]);
+
 @Component({
   selector: 'app-root',
-  template: `
-    <!--The content below is only a placeholder and can be replaced.-->
-    <div style="text-align:center" class="content main">
-      <div style="text-align:center" class="content wrapper">
-        <h1>R<span style="color: #f05945">i</span>ck R<span style="color: #f05945">o</span>ll<span style="color: #f05945">e</span>d 🤭</h1>
-        <iframe width="300vh" height="300vh" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" title="Rick Rolled 🤪" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; autoplay" id="rickVid"></iframe>
-        <audio autoplay loop  id="playAudio">
-            <source src="https://www.myinstants.com/media/sounds/epic.mp3">
-        </audio>
-        <div style="margin-top:5%">
-          <img src="https://i.kym-cdn.com/photos/images/original/000/569/146/2c9.gif" alt="BMO Dance" id="BMO">
-        </div>
-      </div>
-    </div>
-    <router-outlet></router-outlet>
-  `,
-  styles: []
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  animations: [fadeIn]
 })
 export class AppComponent {
+  counter = 10;
+  isShown = true;
   title = 'kab-dev';
 
   ngOnInit(){
-    console.log("nerd :P")
+    console.log("nerd :P");
+    this.countdown();
 
-    var timer = setTimeout(function() {
-      window.location.href ="https://youtu.be/dQw4w9WgXcQ"
-  }, 3000);
+  }
+
+  countdown() {
+    var redirectInterval = setInterval(() =>{
+      this.counter--;
+      if (this.counter === 0) {
+        clearInterval(redirectInterval);
+        // window.location.href ="https://youtu.be/dQw4w9WgXcQ";
+      }
+    }, 1000);
+  }
+
+  fadeInOut() {
+    this.isShown = !this.isShown;
   }
 }
