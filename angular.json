@@ -111,5 +111,8 @@
       }
     }
   },
-  "defaultProject": "kab-dev"
+  "defaultProject": "kab-dev",
+  "cli": {
+    "analytics": false
+  }
 }
