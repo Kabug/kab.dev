@@ -4,9 +4,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { PokedleComponent } from './pages/pokedle/pokedle.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PokedleComponent
   ],
   imports: [
     BrowserModule,
