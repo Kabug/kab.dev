@@ -235,6 +235,14 @@ export class PokedleComponent {
       this.gameState = GAME_STATE.WIN;
       this.openDialog();
     }
+    if (
+      this.dataSource?.data.length > this.maxGuesses - 1 ||
+      this.gameState === this.GAME_STATE.LOSE
+    ) {
+      this.gameState = GAME_STATE.LOSE;
+      this.openDialog();
+      return;
+    }
   }
 
   compareArrays(
