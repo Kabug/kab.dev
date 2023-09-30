@@ -144,6 +144,7 @@ export class PokedleComponent {
       const pokemonData: any = await this.pokeService
         .getPokemonByName(name)
         .toPromise();
+      console.log(pokemonData);
       let totalBaseStat = 0;
       pokemonData?.stats.forEach((stat: { base_stat: number }) => {
         totalBaseStat += stat.base_stat;
@@ -160,7 +161,7 @@ export class PokedleComponent {
         color: pokemonEggData?.color?.name,
         abilities: pokemonData?.abilities,
         egggroup: pokemonEggData?.egg_groups,
-        weight: pokemonData?.weight,
+        weight: pokemonData?.weight/10,
         stats: totalBaseStat,
       };
 
