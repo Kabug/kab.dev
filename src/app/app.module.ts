@@ -10,6 +10,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { LayoutModule } from "@angular/cdk/layout";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MatButtonModule } from '@angular/material/button';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -34,6 +35,7 @@ import { PokemonCardComponent } from "./components/pokemon-card/pokemon-card.com
     MatProgressSpinnerModule,
     LayoutModule,
     MatDialogModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent],

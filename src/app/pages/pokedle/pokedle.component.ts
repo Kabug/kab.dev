@@ -224,7 +224,7 @@ export class PokedleComponent {
     if (temp.length < 1) {
       return;
     }
-    this.dataSource?.data.push(await this.guessPokemon(temp[0].name));
+    this.dataSource?.data.unshift(await this.guessPokemon(temp[0].name));
     this.dataSource._updateChangeSubscription();
 
     this.allPokemon.results = this.allPokemon.results.filter(
@@ -268,5 +268,9 @@ export class PokedleComponent {
 
   openDialog(): void {
     this.dialog.open(this.endDialog);
+  }
+
+  reloadPage() {
+    location.reload();
   }
 }

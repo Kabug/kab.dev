@@ -15,6 +15,7 @@ $yellow2: #b3a125;
   width: 100%;
   gap: 10px;
   align-items: center;
+  padding-bottom: 20px;
 
   .inner-container {
     display: flex;
@@ -85,6 +86,9 @@ $yellow2: #b3a125;
   .guess-count-container {
     padding: 0;
     margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .guess-table {
@@ -126,6 +130,12 @@ $yellow2: #b3a125;
 
 .poke-suggest {
   text-transform: capitalize;
+}
+
+.dialog-text {
+  img {
+    max-width: 300px;
+  }
 }
 
 ::ng-deep .mat-focused .mat-form-field-label {

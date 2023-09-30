@@ -21,6 +21,11 @@
     <div class="inner-container guess-count-container">
         Guesses: {{ dataSource.data.length }} / {{maxGuesses}}
     </div>
+    <div class="inner-container guess-count-container" *ngIf="gameState !== GAME_STATE.START">
+        <p *ngIf="gameState === GAME_STATE.WIN">You win!</p>
+        <p *ngIf="gameState === GAME_STATE.LOSE">You lose!</p>
+        <button mat-raised-button (click)="reloadPage()">Reload Page</button>
+    </div>
     <div class="inner-container pokedex-container">
         <div class="inner-container pokedex-title-container">
             <img class="title" src="https://archives.bulbagarden.net/media/upload/4/4b/Pok%C3%A9dex_logo.png" />
@@ -121,13 +126,11 @@
 
 <ng-template #endDialog>
     <h2 matDialogTitle [innerText]="gameState === GAME_STATE.WIN ? 'You win!' : 'Game Over'"></h2>
-    <p matDialogContent>
+    <p matDialogContent class="dialog-text">
         <!-- <em>You're on your way to being the very best!</em> -->
         <img src="https://media.tenor.com/ihqN6a3iiYEAAAAd/pikachu-shocked-face-stunned.gif"
             *ngIf="gameState === GAME_STATE.LOSE" />
         <img src="        https://media.tenor.com/id90WoqA-sIAAAAC/pikachu.gif" *ngIf="gameState === GAME_STATE.WIN" />
-
-
     </p>
     <mat-dialog-actions align="end">
         <button mat-raised-button matDialogClose>Dismiss</button>
