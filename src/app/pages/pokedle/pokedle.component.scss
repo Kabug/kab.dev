@@ -26,12 +26,14 @@ $yellow2: #b3a125;
 
   .pokedex-title-container {
     background-color: $red1;
+
     .title {
       max-width: 100px;
     }
   }
 
   .pokedex-container {
+    border-top-left-radius: 25px;
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -66,7 +68,6 @@ $yellow2: #b3a125;
   .poke-form {
     .poke-form-field {
       width: 300px;
-      height: 40px;
     }
 
     .poke-input {
@@ -95,15 +96,15 @@ $yellow2: #b3a125;
     border: 2px solid black;
     width: 100%;
 
-    .mat-header-cell,
-    .mat-cell {
+    .mat-mdc-header-cell,
+    .mat-mdc-cell {
       padding: 8px; /* Adjust the desired padding value */
       margin: 4px; /* Adjust the desired margin value */
       text-align: center;
       border: 1px solid black;
     }
 
-    .mat-header-cell {
+    .mat-mdc-header-cell {
       background-color: $blue1;
       color: white;
       font-size: $header;
@@ -139,19 +140,9 @@ $yellow2: #b3a125;
   }
 }
 
-::ng-deep .mat-focused .mat-form-field-label {
+::ng-deep .mat-focused .mdc-floating-label {
   /*change color of label*/
-  color: $red1 !important;
-}
-
-::ng-deep.mat-form-field-underline {
-  /*change color of underline*/
-  background-color: $red1 !important;
-}
-
-::ng-deep.mat-form-field-ripple {
-  /*change color of underline when focused*/
-  background-color: $red1 !important;
+  color: $red2 !important;
 }
 
 .pokeball {

@@ -1,8 +1,9 @@
 import { Component, TemplateRef, ViewChild } from "@angular/core";
 import { PokeService } from "src/app/services/poke.service";
 import { FormControl } from "@angular/forms";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatDialog } from "@angular/material/dialog";
+import { MatTableDataSource as MatTableDataSource } from "@angular/material/table";
+import { MatDialog as MatDialog } from "@angular/material/dialog";
+import { firstValueFrom } from 'rxjs';
 
 // Name
 // Type1
@@ -111,16 +112,14 @@ export class PokedleComponent {
   async getPokemonByUrl(url: string) {
     this.loading = true;
     try {
-      this.pokemonData = await this.pokeService
-        .getPokemonByUrl(url)
-        .toPromise();
+      this.pokemonData = await firstValueFrom(this.pokeService
+        .getPokemonByUrl(url));
       let totalBaseStat = 0;
       this.pokemonData?.stats.forEach((stat: { base_stat: number }) => {
         totalBaseStat += stat.base_stat;
       });
-      const pokemonEggData: any = await this.pokeService
-        .getPokemonEgg(this.pokemonData?.species?.name)
-        .toPromise();
+      const pokemonEggData: any = await firstValueFrom(this.pokeService
+        .getPokemonEgg(this.pokemonData?.species?.name));
       this.todaysPokemon = {
         name: this.pokemonData.name,
         image: this.pokemonData?.sprites?.front_default,
@@ -141,17 +140,15 @@ export class PokedleComponent {
   async guessPokemon(name: string) {
     this.loading = true;
     try {
-      const pokemonData: any = await this.pokeService
-        .getPokemonByName(name)
-        .toPromise();
-      console.log(pokemonData);
+      const pokemonData: any = await firstValueFrom(this.pokeService
+        .getPokemonByName(name));
+      // console.log(pokemonData);
       let totalBaseStat = 0;
       pokemonData?.stats.forEach((stat: { base_stat: number }) => {
         totalBaseStat += stat.base_stat;
       });
-      const pokemonEggData: any = await this.pokeService
-        .getPokemonEgg(pokemonData?.species?.name)
-        .toPromise();
+      const pokemonEggData: any = await firstValueFrom(this.pokeService
+        .getPokemonEgg(pokemonData?.species?.name));
 
       const pokemonObj: any = {
         name: pokemonData.name,
@@ -178,7 +175,7 @@ export class PokedleComponent {
     this.loading = true;
 
     try {
-      this.allPokemon = await this.pokeService.getAllPokemon().toPromise();
+      this.allPokemon = await firstValueFrom(this.pokeService.getAllPokemon());
       // console.log(this.allPokemon);
     } catch (error) {
       console.error(error);
