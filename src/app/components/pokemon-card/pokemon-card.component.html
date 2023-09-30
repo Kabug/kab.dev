@@ -1,0 +1,7 @@
+<img *ngIf="!imageError1" src="https://img.pokemondb.net/sprites/sword-shield/icon/{{pokemon?.name}}.png"
+    (error)="handleImageError($event)" (click)="hideItem()" [class.invisible]="hidden"
+    alt="{{pokemon?.name}}" title="{{pokemon?.name}}"/>
+<img *ngIf="imageError1 && !imageError2"
+    src="https://img.pokemondb.net/sprites/scarlet-violet/icon/{{pokemon?.name}}.png"
+    (error)="handleImageError2($event)" (click)="hideItem()" [class.invisible]="hidden" 
+    alt="{{pokemon?.name}}" title="{{pokemon?.name}}"/>

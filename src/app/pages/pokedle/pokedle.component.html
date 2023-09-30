@@ -1,4 +1,135 @@
-<div class="page-container">
-    Hello World!
+<div class="container">
+    <div class="inner-container">
+        <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/269px-International_Pok%C3%A9mon_logo.svg.png" />
+    </div>
+    <div class="inner-container">
+        <form class="poke-form inner-container">
+            <mat-form-field class="poke-form-field">
+                <mat-label>Pokemon Name</mat-label>
+                <input class="poke-input" type="text" placeholder="Larvitar" aria-label="Pokemon" matInput
+                    [formControl]="pokeInputControl" [matAutocomplete]="auto" (keydown.enter)="onSubmit($event)" />
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option class="poke-suggest" *ngFor="let pokemon of suggestedPokemons" [value]="pokemon?.name">
+                        {{ pokemon?.name }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <div class="pokeball" (click)="onSubmit($event)"></div>
+        </form>
+    </div>
+    <div class="inner-container guess-count-container">
+        Guesses: {{ dataSource.data.length }} / {{maxGuesses}}
+    </div>
+    <div class="inner-container pokedex-container">
+        <div class="inner-container pokedex-title-container">
+            <img class="title" src="https://archives.bulbagarden.net/media/upload/4/4b/Pok%C3%A9dex_logo.png" />
+        </div>
+        <div class="inner-container pokedex-inner-container">
+            <div class="sprite-container">
+                <app-pokemon-card *ngFor="let pokemon of allPokemon?.results" [pokemon]="pokemon"></app-pokemon-card>
+            </div>
+        </div>
+    </div>
+    <div class="inner-container" *ngIf="loading">
+        <mat-progress-spinner *ngIf="loading" mode="indeterminate" diameter="100" strokeWidth="8"
+            color="warn"></mat-progress-spinner>
+    </div>
+    <div class="inner-container table-container">
+        <table mat-table [dataSource]="dataSource" class="guess-table">
+            <ng-container matColumnDef="image">
+                <th mat-header-cell *matHeaderCellDef>Pokemon</th>
+                <td mat-cell *matCellDef="let element">
+                    <img src="{{ element.image }}" />
+                    <p *ngIf="!element.image">{{element.name}}</p>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="type1">
+                <th mat-header-cell *matHeaderCellDef>Type 1</th>
+                <td mat-cell *matCellDef="let element"
+                    [class.correct]="element.type1?.type?.name === todaysPokemon.type1?.type?.name"
+                    [class.wrong]="element.type1?.type?.name !== todaysPokemon.type1?.type?.name">
+                    {{ element.type1?.type?.name }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="type2">
+                <th mat-header-cell *matHeaderCellDef>Type 2</th>
+                <td mat-cell *matCellDef="let element"
+                    [class.correct]="element.type2?.type?.name === todaysPokemon.type2?.type?.name"
+                    [class.wrong]="element.type2?.type?.name !== todaysPokemon.type2?.type?.name">
+                    {{ element.type2?.type?.name || 'N/A' }}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="color">
+                <th mat-header-cell *matHeaderCellDef>Color</th>
+                <td mat-cell *matCellDef="let element" [class.correct]="element.color === todaysPokemon.color"
+                    [class.wrong]="element.color !== todaysPokemon.color">{{ element.color }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="abilities">
+                <th mat-header-cell *matHeaderCellDef>Abilities</th>
+                <td mat-cell *matCellDef="let element"
+                    [class.correct]="compareArrays(element.abilities, todaysPokemon.abilities, 'ability', 'name') === ArrayComparisonResult.Same"
+                    [class.wrong]="compareArrays(element.abilities, todaysPokemon.abilities, 'ability', 'name') === ArrayComparisonResult.NoCommonValues"
+                    [class.partial]="compareArrays(element.abilities, todaysPokemon.abilities, 'ability', 'name') === ArrayComparisonResult.CommonValues">
+                    <ng-container *ngFor="let ability of element.abilities; let last = last">
+                        {{ ability?.ability?.name }}<span *ngIf="!last">, </span>
+                    </ng-container>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="egggroup">
+                <th mat-header-cell *matHeaderCellDef>Egggroup</th>
+                <td mat-cell *matCellDef="let element"
+                    [class.correct]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'name') === ArrayComparisonResult.Same"
+                    [class.wrong]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'name') === ArrayComparisonResult.NoCommonValues"
+                    [class.partial]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'name') === ArrayComparisonResult.CommonValues">
+                    <ng-container *ngFor="let egggroup of element.egggroup; let last = last">
+                        {{ egggroup?.name }}<span *ngIf="!last">, </span>
+                    </ng-container>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="weight">
+                <th mat-header-cell *matHeaderCellDef>Weight</th>
+                <td mat-cell *matCellDef="let element" [class.correct]="element.weight === todaysPokemon.weight"
+                    [class.wrong]="element.weight !== todaysPokemon.weight">
+                    {{ element.weight }}
+                    <mat-icon *ngIf="element.weight > todaysPokemon.weight">keyboard_arrow_down</mat-icon>
+                    <mat-icon *ngIf="element.weight < todaysPokemon.weight">keyboard_arrow_up</mat-icon>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="stats">
+                <th mat-header-cell *matHeaderCellDef>Stats</th>
+                <td mat-cell *matCellDef="let element" [class.correct]="element.stats === todaysPokemon.stats"
+                    [class.wrong]="element.stats !== todaysPokemon.stats">
+                    {{ element.stats }}
+                    <mat-icon *ngIf="element.stats > todaysPokemon.stats">keyboard_arrow_down</mat-icon>
+                    <mat-icon *ngIf="element.stats < todaysPokemon.stats">keyboard_arrow_up</mat-icon>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+    </div>
 </div>
-  
+
+<ng-template #endDialog>
+    <h2 matDialogTitle [innerText]="gameState === GAME_STATE.WIN ? 'You win!' : 'Game Over'"></h2>
+    <p matDialogContent>
+        <!-- <em>You're on your way to being the very best!</em> -->
+        <img src="https://media.tenor.com/ihqN6a3iiYEAAAAd/pikachu-shocked-face-stunned.gif"
+            *ngIf="gameState === GAME_STATE.LOSE" />
+        <img src="        https://media.tenor.com/id90WoqA-sIAAAAC/pikachu.gif" *ngIf="gameState === GAME_STATE.WIN" />
+
+
+    </p>
+    <mat-dialog-actions align="end">
+        <button mat-raised-button matDialogClose>Dismiss</button>
+    </mat-dialog-actions>
+</ng-template>

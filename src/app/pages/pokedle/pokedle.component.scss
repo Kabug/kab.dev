@@ -1,0 +1,214 @@
+@import "../../styles/_variables";
+
+$red1: #ff0000;
+$red2: #cc0000;
+$blue1: #3b4cca;
+$yellow1: #ffde00;
+$yellow2: #b3a125;
+
+.container {
+  @media #{$lg}, #{$xl} {
+    display: flex;
+  }
+
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+
+  .inner-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    overflow: auto;
+  }
+
+  .pokedex-title-container {
+    background-color: $red1;
+    .title {
+      max-width: 100px;
+    }
+  }
+
+  .pokedex-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background-color: #e7e7e7;
+      border: 1px solid #cacaca;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: $red2;
+    }
+  }
+
+  .pokedex-inner-container {
+    border: 4px solid $red1;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+      rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+  }
+
+  .sprite-container {
+    width: 800px;
+    height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .poke-form {
+    .poke-form-field {
+      width: 300px;
+      height: 40px;
+    }
+
+    .poke-input {
+      text-transform: capitalize;
+    }
+  }
+
+  .table-container {
+    padding: 0;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: block;
+    @media #{$lg}, #{$xl} {
+      display: flex;
+    }
+  }
+
+  .guess-count-container {
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  .guess-table {
+    border: 2px solid black;
+    width: 100%;
+
+    .mat-header-cell,
+    .mat-cell {
+      padding: 8px; /* Adjust the desired padding value */
+      margin: 4px; /* Adjust the desired margin value */
+      text-align: center;
+      border: 1px solid black;
+    }
+
+    .mat-header-cell {
+      background-color: $blue1;
+      color: white;
+      font-size: $header;
+    }
+
+    .correct {
+      background-color: lightgreen;
+    }
+
+    .partial {
+      background-color: lightsalmon;
+    }
+
+    .wrong {
+      background-color: lightcoral;
+    }
+
+    td {
+      font-size: $body;
+      text-transform: capitalize;
+    }
+  }
+}
+
+.poke-suggest {
+  text-transform: capitalize;
+}
+
+::ng-deep .mat-focused .mat-form-field-label {
+  /*change color of label*/
+  color: $red1 !important;
+}
+
+::ng-deep.mat-form-field-underline {
+  /*change color of underline*/
+  background-color: $red1 !important;
+}
+
+::ng-deep.mat-form-field-ripple {
+  /*change color of underline when focused*/
+  background-color: $red1 !important;
+}
+
+.pokeball {
+  &:hover {
+    cursor: pointer;
+  }
+
+  display: block;
+  width: 48px;
+  height: 48px;
+  background: radial-gradient(
+      white 4px,
+      black 4.25px 4.5px,
+      white 4.75px 6px,
+      black 6.25px 8px,
+      transparent 8.25px
+    ),
+    linear-gradient(
+      to bottom,
+      red 0 20px,
+      black 20.25px 24px,
+      white 24.25px 25px
+    );
+  border-radius: 50%;
+  border: 2px solid black;
+  box-shadow: inset -4px -2px 0 0 rgba(0, 0, 0, 0.2);
+  animation: fall 0.5s ease-in-out 1s,
+    shake 1.25s cubic-bezier(0.36, 0.07, 0.19, 0.97) 1.5s 3,
+    // catch 0.5s ease-out 5.25s forwards
+;
+}
+/* Animation */
+@keyframes shake {
+  0% {
+    transform: translateX(0) rotate(0);
+  }
+  20% {
+    transform: translateX(-10px) rotate(-20deg);
+  }
+  30% {
+    transform: translateX(10px) rotate(20deg);
+  }
+  50% {
+    transform: translateX(-10px) rotate(-10deg);
+  }
+  60% {
+    transform: translateX(10px) rotate(10deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+}
+@keyframes fall {
+  0% {
+    transform: translateY(-200%);
+  }
+  60% {
+    transform: translateY(0);
+  }
+  80% {
+    transform: translateY(-10%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+// @keyframes catch {
+//   to {
+//     filter: saturate(0.8) brightness(0.8);
+//   }
+// }
