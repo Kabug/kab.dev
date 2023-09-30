@@ -54,7 +54,8 @@
                 <th mat-header-cell *matHeaderCellDef>Type 1</th>
                 <td mat-cell *matCellDef="let element"
                     [class.correct]="element.type1?.type?.name === todaysPokemon.type1?.type?.name"
-                    [class.wrong]="element.type1?.type?.name !== todaysPokemon.type1?.type?.name">
+                    [class.wrong]="element.type1?.type?.name !== todaysPokemon.type1?.type?.name"
+                    [class.partial]="element.type1?.type?.name === todaysPokemon.type2.type?.name">
                     {{ element.type1?.type?.name }}
                 </td>
             </ng-container>
@@ -63,7 +64,8 @@
                 <th mat-header-cell *matHeaderCellDef>Type 2</th>
                 <td mat-cell *matCellDef="let element"
                     [class.correct]="element.type2?.type?.name === todaysPokemon.type2?.type?.name"
-                    [class.wrong]="element.type2?.type?.name !== todaysPokemon.type2?.type?.name">
+                    [class.wrong]="element.type2?.type?.name !== todaysPokemon.type2?.type?.name"
+                    [class.partial]="element.type2?.type?.name === todaysPokemon.type1?.type?.name">
                     {{ element.type2?.type?.name || 'N/A' }}
                 </td>
             </ng-container>
