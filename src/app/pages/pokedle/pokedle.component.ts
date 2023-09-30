@@ -129,7 +129,7 @@ export class PokedleComponent {
         color: pokemonEggData?.color?.name,
         abilities: this.pokemonData?.abilities,
         egggroup: pokemonEggData?.egg_groups,
-        weight: this.pokemonData?.weight,
+        weight: this.pokemonData?.weight/10,
         stats: totalBaseStat,
       };
     } catch (error) {
