@@ -6,13 +6,13 @@
     "start": "node server.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "heroku-postbuild": "ng build --prod"
+    "heroku-postbuild": "ng build --configuration production"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "~15.2.9",
     "@angular/cdk": "^12.2.13",
-    "@angular/cli": "~12.0.3",
+    "@angular/cli": "~12.2.18",
     "@angular/common": "~15.2.9",
     "@angular/compiler": "~15.2.9",
     "@angular/compiler-cli": "~15.2.9",
@@ -30,8 +30,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~12.0.3",
-    "@angular/cli": "~12.0.3",
+    "@angular-devkit/build-angular": "~12.2.18",
     "@types/node": "^12.11.1",
     "typescript": "~4.2.3"
   },
