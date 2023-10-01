@@ -115,7 +115,6 @@ export class PokedleComponent {
 
   async ngOnInit() {
     await this.fetchData();
-
     this.pokeInputControl.valueChanges.subscribe((newValue) => {
       this.onPokeInput();
     });
@@ -153,25 +152,23 @@ export class PokedleComponent {
     this.loading = false;
   }
 
-  fetchData(): void {
-    // Call the data service to fetch JSON data
-    this.dataService.getData().subscribe(
-      (fetchData) => {
-        console.log("hello");
-        this.allPokemon = fetchData?.data?.pokemon_v2_pokemon;
-        console.log(fetchData); // You can now use this.jsonData in your component
-      },
-      (error) => {
-        console.error(error);
-        if (!data) {
-          return;
-        }
-        console.log("resorting to backup");
-        // @ts-ignore
-        this.allPokemon = data.data.pokemon_v2_pokemon;
+  async fetchData(): Promise<void> {
+    try {
+      const fetchData = await firstValueFrom(this.dataService.getData());
+      console.log("hello");
+      this.allPokemon = fetchData?.data?.pokemon_v2_pokemon;
+      console.log(fetchData); // You can now use this.allPokemon in your component
+    } catch (error) {
+      console.error(error);
+      if (!data) {
+        return;
       }
-    );
+      console.log("resorting to backup");
+      // @ts-ignore
+      this.allPokemon = data.data.pokemon_v2_pokemon;
+    }
   }
+  
 
   createPokemonObj(pokemon: any) {
     if (!pokemon) {
