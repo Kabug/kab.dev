@@ -4,8 +4,8 @@ import { FormControl } from "@angular/forms";
 import { MatTableDataSource as MatTableDataSource } from "@angular/material/table";
 import { MatDialog as MatDialog } from "@angular/material/dialog";
 import { firstValueFrom } from "rxjs";
-import { HttpClient } from "@angular/common/http";
-import data from "../../../assets/data.json";
+import data from "@root/pokedata.json";
+import { DataService } from "../../services/data.service.ts";
 
 // Name
 // Type1
@@ -110,21 +110,17 @@ export class PokedleComponent {
   constructor(
     private pokeService: PokeService,
     private dialog: MatDialog,
-    private http: HttpClient
+    private dataService: DataService
   ) {}
 
   async ngOnInit() {
-    if (!data) {
-      return;
-    }
-    // @ts-ignore
-    this.allPokemon = data.data.pokemon_v2_pokemon;
+    await this.fetchData();
 
     this.pokeInputControl.valueChanges.subscribe((newValue) => {
       this.onPokeInput();
     });
     this.getRandomPokemon();
-    this.hoveredPokemon = this.createPokemonObj(this.allPokemon[0]);
+    this.hoveredPokemon = this.createPokemonObj(this.allPokemon?.[0]);
   }
 
   async getPokemonByUrl(url: string) {
@@ -155,6 +151,26 @@ export class PokedleComponent {
       console.error(error);
     }
     this.loading = false;
+  }
+
+  fetchData(): void {
+    // Call the data service to fetch JSON data
+    this.dataService.getData().subscribe(
+      (fetchData) => {
+        console.log("hello");
+        this.allPokemon = fetchData?.data?.pokemon_v2_pokemon;
+        console.log(fetchData); // You can now use this.jsonData in your component
+      },
+      (error) => {
+        console.error(error);
+        if (!data) {
+          return;
+        }
+        console.log("resorting to backup");
+        // @ts-ignore
+        this.allPokemon = data.data.pokemon_v2_pokemon;
+      }
+    );
   }
 
   createPokemonObj(pokemon: any) {
@@ -207,7 +223,7 @@ export class PokedleComponent {
       this.allPokemon?.length * Math.abs(x - Math.floor(x))
     ).toString();
     if (randomNum) {
-      this.todaysPokemon = this.createPokemonObj(this.allPokemon[randomNum]);
+      this.todaysPokemon = this.createPokemonObj(this.allPokemon?.[randomNum]);
     }
   }
 
@@ -254,8 +270,7 @@ export class PokedleComponent {
     if (pokemon?.name === this.todaysPokemon.name) {
       this.gameState = GAME_STATE.WIN;
       this.openDialog();
-    }
-    else if (
+    } else if (
       this.dataSource?.data.length > this.maxGuesses - 1 ||
       this.gameState === this.GAME_STATE.LOSE
     ) {
@@ -304,6 +319,5 @@ export class PokedleComponent {
 
   onChildHover(pokemon: PokemonStats) {
     this.hoveredPokemon = pokemon;
-    console.log(this.hoveredPokemon);
   }
 }

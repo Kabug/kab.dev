@@ -38,24 +38,24 @@
                 </div>
             </div>
             <div class="pokedex-stats-container">
-                <div class="pokedex-stat">Name: {{ hoveredPokemon.name }}</div>
-                <div class="pokedex-stat">Type: {{ hoveredPokemon.type1 }}</div>
-                <div class="pokedex-stat">Type: {{ hoveredPokemon.type2 }}</div>
-                <div class="pokedex-stat">Color: {{ hoveredPokemon.color }}</div>
+                <div class="pokedex-stat">Name: {{ hoveredPokemon?.name }}</div>
+                <div class="pokedex-stat">Type: {{ hoveredPokemon?.type1 }}</div>
+                <div class="pokedex-stat">Type: {{ hoveredPokemon?.type2 }}</div>
+                <div class="pokedex-stat">Color: {{ hoveredPokemon?.color }}</div>
                 <div class="pokedex-stat">
                     Abilities: 
-                    <div *ngFor="let ability of hoveredPokemon.abilities; let last = last">
+                    <div *ngFor="let ability of hoveredPokemon?.abilities; let last = last">
                         {{ ability?.pokemon_v2_ability?.name }}<span *ngIf="!last">, </span>
                     </div>
                 </div>
                 <div class="pokedex-stat">
                     Eggroups: 
-                    <div *ngFor="let egggroup of hoveredPokemon.egggroup; let last = last">
+                    <div *ngFor="let egggroup of hoveredPokemon?.egggroup; let last = last">
                         {{ egggroup?.pokemon_v2_egggroup?.name }}<span *ngIf="!last">, </span>
                     </div>
                 </div>
-                <div class="pokedex-stat">Weight: {{ hoveredPokemon.weight }}</div>
-                <div class="pokedex-stat">Stats: {{ hoveredPokemon.stats }}</div>
+                <div class="pokedex-stat">Weight: {{ hoveredPokemon?.weight }}</div>
+                <div class="pokedex-stat">Stats: {{ hoveredPokemon?.stats }}</div>
             </div>
         </div>
 

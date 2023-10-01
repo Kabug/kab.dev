@@ -19,7 +19,11 @@
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@app/*": ["app/*"],
+      "@root/*": ["./*"]
+    },
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

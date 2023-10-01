@@ -3,12 +3,20 @@ const path = require("path");
 const fileUpload = require("express-fileupload");
 const axios = require("axios");
 const cron = require("node-cron");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
+
 const port = process.env.PORT || 8080;
 
 app.use(express.static("./dist/kab-dev"));
 app.use(fileUpload());
+
+app.get("/api/pokedata", (req, res) => {
+  res.header("Content-Type",'application/json');
+  res.sendFile(path.join(__dirname, 'pokedata.json'));
+});
 
 app.get("/*", (req, res) =>
   res.sendFile("index.html", { root: "dist/kab-dev/" })
@@ -94,10 +102,8 @@ async function fetchDataAndSaveToFile() {
       }
     );
     // Save the GraphQL response data to a file
-    const dataFilePath = path.join(__dirname, "src/assets/data.json");
+    const dataFilePath = path.join(__dirname, "pokedata.json");
     await saveDataToFile(dataFilePath, response.data);
-    const distFilePath = path.join(__dirname, "dist/kab-dev/assets/data.json");
-    await saveDataToFile(distFilePath, response.data);
 
 
     console.log("Data fetched from GraphQL and saved successfully.");
