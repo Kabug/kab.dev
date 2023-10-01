@@ -3,7 +3,9 @@ import { PokeService } from "src/app/services/poke.service";
 import { FormControl } from "@angular/forms";
 import { MatTableDataSource as MatTableDataSource } from "@angular/material/table";
 import { MatDialog as MatDialog } from "@angular/material/dialog";
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import data from "../../../assets/data.json";
 
 // Name
 // Type1
@@ -21,8 +23,8 @@ import { firstValueFrom } from 'rxjs';
 export interface PokemonStats {
   name: string;
   image: string;
-  type1: any;
-  type2: any;
+  type1: string;
+  type2: string;
   color: string;
   abilities: [];
   egggroup: [];
@@ -64,20 +66,32 @@ export class PokedleComponent {
   pokemonData: any;
   allPokemon: any;
   suggestedPokemons: any;
-  randomNum: string | undefined;
   todaysPokemon: PokemonStats = {
     name: "",
     image: "",
-    type1: {},
-    type2: {},
+    type1: "",
+    type2: "",
     color: "",
     abilities: [],
     egggroup: [],
     weight: 0,
     stats: 0,
   };
+  correctlyGuessed: PokemonStats = {
+    name: "",
+    image: "",
+    type1: "",
+    type2: "",
+    color: "",
+    abilities: [],
+    egggroup: [],
+    weight: 0,
+    stats: 0,
+  };
+  hoveredPokemon: any;
+  guesses = 0;
   maxGuesses = 10;
-  loading = true;
+  loading = false;
   customColor = "red";
 
   displayedColumns: string[] = [
@@ -93,33 +107,39 @@ export class PokedleComponent {
   dataSource: MatTableDataSource<PokemonStats> =
     new MatTableDataSource<PokemonStats>();
 
-  constructor(private pokeService: PokeService, private dialog: MatDialog) {}
+  constructor(
+    private pokeService: PokeService,
+    private dialog: MatDialog,
+    private http: HttpClient
+  ) {}
 
   async ngOnInit() {
+    if (!data) {
+      return;
+    }
+    // @ts-ignore
+    this.allPokemon = data.data.pokemon_v2_pokemon;
+
     this.pokeInputControl.valueChanges.subscribe((newValue) => {
       this.onPokeInput();
     });
-    await this.getAllPokemon();
     this.getRandomPokemon();
-    if (this.randomNum) {
-      await this.getPokemonByUrl(
-        this.allPokemon?.results?.[this.randomNum]?.url
-      );
-    }
-    // console.log(this.todaysPokemon);
+    this.hoveredPokemon = this.createPokemonObj(this.allPokemon[0]);
   }
 
   async getPokemonByUrl(url: string) {
     this.loading = true;
     try {
-      this.pokemonData = await firstValueFrom(this.pokeService
-        .getPokemonByUrl(url));
+      this.pokemonData = await firstValueFrom(
+        this.pokeService.getPokemonByUrl(url)
+      );
       let totalBaseStat = 0;
       this.pokemonData?.stats.forEach((stat: { base_stat: number }) => {
         totalBaseStat += stat.base_stat;
       });
-      const pokemonEggData: any = await firstValueFrom(this.pokeService
-        .getPokemonEgg(this.pokemonData?.species?.name));
+      const pokemonEggData: any = await firstValueFrom(
+        this.pokeService.getPokemonEgg(this.pokemonData?.species?.name)
+      );
       this.todaysPokemon = {
         name: this.pokemonData.name,
         image: this.pokemonData?.sprites?.front_default,
@@ -128,51 +148,42 @@ export class PokedleComponent {
         color: pokemonEggData?.color?.name,
         abilities: this.pokemonData?.abilities,
         egggroup: pokemonEggData?.egg_groups,
-        weight: this.pokemonData?.weight/10,
-        stats: totalBaseStat
+        weight: this.pokemonData?.weight / 10,
+        stats: totalBaseStat,
       };
     } catch (error) {
       console.error(error);
     }
-    this.pokeService.getAllPokemonGQL().subscribe((response: any) => {
-      // Handle the response here
-      console.log("Pokemon data:", response.data);
-    });
     this.loading = false;
   }
 
-  async guessPokemon(name: string) {
-    this.loading = true;
-    try {
-      const pokemonData: any = await firstValueFrom(this.pokeService
-        .getPokemonByName(name));
-      // console.log(pokemonData);
-      let totalBaseStat = 0;
-      pokemonData?.stats.forEach((stat: { base_stat: number }) => {
-        totalBaseStat += stat.base_stat;
-      });
-      const pokemonEggData: any = await firstValueFrom(this.pokeService
-        .getPokemonEgg(pokemonData?.species?.name));
-
-      const pokemonObj: any = {
-        name: pokemonData.name,
-        image: pokemonData?.sprites?.front_default,
-        type1: pokemonData?.types[0],
-        type2: pokemonData?.types[1],
-        color: pokemonEggData?.color?.name,
-        abilities: pokemonData?.abilities,
-        egggroup: pokemonEggData?.egg_groups,
-        weight: pokemonData?.weight/10,
-        stats: totalBaseStat,
-      };
-
-      this.loading = false;
-      return pokemonObj;
-    } catch (error) {
-      this.loading = false;
-      console.error(error);
+  createPokemonObj(pokemon: any) {
+    if (!pokemon) {
+      return;
     }
-    return;
+
+    const sprite =
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
+      pokemon?.id +
+      ".png";
+    let totalBaseStat = 0;
+    pokemon?.pokemon_v2_pokemonstats.forEach((stat: { base_stat: number }) => {
+      totalBaseStat += stat.base_stat;
+    });
+
+    const pokemonObj: any = {
+      name: pokemon?.name,
+      image: sprite,
+      type1: pokemon?.pokemon_v2_pokemontypes[0]?.pokemon_v2_type?.name,
+      type2:
+        pokemon?.pokemon_v2_pokemontypes[1]?.pokemon_v2_type?.name ?? "N/A",
+      color: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemoncolor?.name,
+      abilities: pokemon?.pokemon_v2_pokemonabilities,
+      egggroup: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonegggroups,
+      weight: pokemon?.weight / 10,
+      stats: totalBaseStat,
+    };
+    return pokemonObj;
   }
 
   async getAllPokemon() {
@@ -192,52 +203,59 @@ export class PokedleComponent {
       new Date().toISOString().split("T", 1)[0].replace(/\D/g, "")
     );
     var x = Math.sin(seed++) * 10000;
-    this.randomNum = Math.round(
-      this.allPokemon.count * Math.abs(x - Math.floor(x)) + 1
+    const randomNum = Math.round(
+      this.allPokemon?.length * Math.abs(x - Math.floor(x))
     ).toString();
+    if (randomNum) {
+      this.todaysPokemon = this.createPokemonObj(this.allPokemon[randomNum]);
+    }
   }
 
   // Make a better search later
   // Make just filter by the values entered counting the order
   onPokeInput() {
-    this.suggestedPokemons = this.allPokemon?.results.filter(
-      (val: { name: (string | undefined)[] }) =>
-        val?.name.includes(this.pokeInputControl.value?.toLowerCase())
+    this.suggestedPokemons = this.allPokemon?.filter(
+      (pokemon: { name: (string | undefined)[] }) =>
+        pokemon?.name.includes(this.pokeInputControl.value?.toLowerCase())
     );
   }
 
-  async onSubmit(event: any) {
+  onSubmit(event: any) {
     event.preventDefault();
     if (this.loading || this.gameState === this.GAME_STATE.WIN) {
       return;
     }
+    if (!this.pokeInputControl.value) {
+      return;
+    }
     if (
-      this.dataSource?.data.length > this.maxGuesses - 1 ||
+      this.maxGuesses - 1 < this.guesses ||
       this.gameState === this.GAME_STATE.LOSE
     ) {
       this.gameState = GAME_STATE.LOSE;
       this.openDialog();
       return;
     }
-    const temp = this.allPokemon?.results.filter(
-      (val: { name: (string | undefined)[] }) =>
-        val?.name.includes(this.pokeInputControl.value?.toLowerCase())
+    this.guesses += 1;
+    const pokemon = this.allPokemon?.find(
+      (pokemon: { name: (string | undefined)[] }) =>
+        pokemon?.name.includes(this.pokeInputControl.value?.toLowerCase())
     );
-    if (temp.length < 1) {
+    if (!pokemon) {
       return;
     }
-    this.dataSource?.data.unshift(await this.guessPokemon(temp[0].name));
+    this.dataSource?.data.unshift(this.createPokemonObj(pokemon));
     this.dataSource._updateChangeSubscription();
 
-    this.allPokemon.results = this.allPokemon.results.filter(
-      (pokemonObj: { name: any }) => pokemonObj.name !== temp[0].name
+    this.allPokemon = this.allPokemon.filter(
+      (pokemonObj: { name: any }) => pokemonObj.name !== pokemon?.name
     );
     this.pokeInputControl.setValue("");
-    if (temp[0].name === this.todaysPokemon.name) {
+    if (pokemon?.name === this.todaysPokemon.name) {
       this.gameState = GAME_STATE.WIN;
       this.openDialog();
     }
-    if (
+    else if (
       this.dataSource?.data.length > this.maxGuesses - 1 ||
       this.gameState === this.GAME_STATE.LOSE
     ) {
@@ -282,5 +300,10 @@ export class PokedleComponent {
 
   reloadPage() {
     location.reload();
+  }
+
+  onChildHover(pokemon: PokemonStats) {
+    this.hoveredPokemon = pokemon;
+    console.log(this.hoveredPokemon);
   }
 }

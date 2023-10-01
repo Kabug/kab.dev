@@ -19,5 +19,12 @@ $portrait: "orientation: portrait";
 // Landscape orientation
 $landscape: "orientation: landscape";
 
+@font-face {
+    font-family: 'digital';
+    src: url('../../assets/fonts/digital-7.ttf') format('truetype');
+  }
+
 $header: 24px;
 $body: 16px;
+
+

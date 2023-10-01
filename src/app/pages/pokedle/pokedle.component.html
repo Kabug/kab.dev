@@ -1,7 +1,7 @@
 <div class="container">
-    <div class="inner-container">
-        <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/269px-International_Pok%C3%A9mon_logo.svg.png" />
+    <div class="inner-container title-container">
+        <img class="title"
+            src="../../assets/images/pokedle.png" />
     </div>
     <div class="inner-container">
         <form class="poke-form inner-container">
@@ -28,18 +28,42 @@
     </div>
     <div class="inner-container pokedex-container">
         <div class="inner-container pokedex-title-container">
-            <img class="title" src="https://archives.bulbagarden.net/media/upload/4/4b/Pok%C3%A9dex_logo.png" />
+            <img class="title" src="../../assets/images/pokedex.png" />
         </div>
-        <div class="inner-container pokedex-inner-container">
-            <div class="sprite-container">
-                <app-pokemon-card *ngFor="let pokemon of allPokemon?.results" [pokemon]="pokemon"></app-pokemon-card>
+        <div class="pokedex-screens-container">
+            <div class="inner-container pokedex-inner-container">
+                <div class="sprite-container">
+                    <app-pokemon-card *ngFor="let pokemon of allPokemon" [pokemon]="pokemon"
+                        (hoverEvent)="onChildHover($event)"></app-pokemon-card>
+                </div>
+            </div>
+            <div class="pokedex-stats-container">
+                <div class="pokedex-stat">Name: {{ hoveredPokemon.name }}</div>
+                <div class="pokedex-stat">Type: {{ hoveredPokemon.type1 }}</div>
+                <div class="pokedex-stat">Type: {{ hoveredPokemon.type2 }}</div>
+                <div class="pokedex-stat">Color: {{ hoveredPokemon.color }}</div>
+                <div class="pokedex-stat">
+                    Abilities: 
+                    <div *ngFor="let ability of hoveredPokemon.abilities; let last = last">
+                        {{ ability?.pokemon_v2_ability?.name }}<span *ngIf="!last">, </span>
+                    </div>
+                </div>
+                <div class="pokedex-stat">
+                    Eggroups: 
+                    <div *ngFor="let egggroup of hoveredPokemon.egggroup; let last = last">
+                        {{ egggroup?.pokemon_v2_egggroup?.name }}<span *ngIf="!last">, </span>
+                    </div>
+                </div>
+                <div class="pokedex-stat">Weight: {{ hoveredPokemon.weight }}</div>
+                <div class="pokedex-stat">Stats: {{ hoveredPokemon.stats }}</div>
             </div>
         </div>
+
     </div>
-    <div class="inner-container" *ngIf="loading">
+    <!-- <div class="inner-container" *ngIf="loading">
         <mat-progress-spinner *ngIf="loading" mode="indeterminate" diameter="100" strokeWidth="8"
             color="warn"></mat-progress-spinner>
-    </div>
+    </div> -->
     <div class="inner-container table-container">
         <table mat-table [dataSource]="dataSource" class="guess-table">
             <ng-container matColumnDef="image">
@@ -52,21 +76,19 @@
 
             <ng-container matColumnDef="type1">
                 <th mat-header-cell *matHeaderCellDef>Type 1</th>
-                <td mat-cell *matCellDef="let element"
-                    [class.correct]="element.type1?.type?.name === todaysPokemon.type1?.type?.name"
-                    [class.wrong]="element.type1?.type?.name !== todaysPokemon.type1?.type?.name"
-                    [class.partial]="element.type1?.type?.name === todaysPokemon.type2.type?.name">
-                    {{ element.type1?.type?.name }}
+                <td mat-cell *matCellDef="let element" [class.correct]="element.type1 === todaysPokemon.type1"
+                    [class.wrong]="element.type1 !== todaysPokemon.type1"
+                    [class.partial]="element.type1 === todaysPokemon.type2">
+                    {{ element.type1 }}
                 </td>
             </ng-container>
 
             <ng-container matColumnDef="type2">
                 <th mat-header-cell *matHeaderCellDef>Type 2</th>
-                <td mat-cell *matCellDef="let element"
-                    [class.correct]="element.type2?.type?.name === todaysPokemon.type2?.type?.name"
-                    [class.wrong]="element.type2?.type?.name !== todaysPokemon.type2?.type?.name"
-                    [class.partial]="element.type2?.type?.name === todaysPokemon.type1?.type?.name">
-                    {{ element.type2?.type?.name || 'N/A' }}
+                <td mat-cell *matCellDef="let element" [class.correct]="element.type2 === todaysPokemon.type2"
+                    [class.wrong]="element.type2 !== todaysPokemon.type2"
+                    [class.partial]="element.type2 === todaysPokemon.type1">
+                    {{ element.type2 }}
                 </td>
             </ng-container>
 
@@ -79,11 +101,11 @@
             <ng-container matColumnDef="abilities">
                 <th mat-header-cell *matHeaderCellDef>Abilities</th>
                 <td mat-cell *matCellDef="let element"
-                    [class.correct]="compareArrays(element.abilities, todaysPokemon.abilities, 'ability', 'name') === ArrayComparisonResult.Same"
-                    [class.wrong]="compareArrays(element.abilities, todaysPokemon.abilities, 'ability', 'name') === ArrayComparisonResult.NoCommonValues"
-                    [class.partial]="compareArrays(element.abilities, todaysPokemon.abilities, 'ability', 'name') === ArrayComparisonResult.CommonValues">
+                    [class.correct]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ArrayComparisonResult.Same"
+                    [class.wrong]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ArrayComparisonResult.NoCommonValues"
+                    [class.partial]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ArrayComparisonResult.CommonValues">
                     <ng-container *ngFor="let ability of element.abilities; let last = last">
-                        {{ ability?.ability?.name }}<span *ngIf="!last">, </span>
+                        {{ ability?.pokemon_v2_ability?.name }}<span *ngIf="!last">, </span>
                     </ng-container>
                 </td>
             </ng-container>
@@ -91,11 +113,11 @@
             <ng-container matColumnDef="egggroup">
                 <th mat-header-cell *matHeaderCellDef>Egggroup</th>
                 <td mat-cell *matCellDef="let element"
-                    [class.correct]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'name') === ArrayComparisonResult.Same"
-                    [class.wrong]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'name') === ArrayComparisonResult.NoCommonValues"
-                    [class.partial]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'name') === ArrayComparisonResult.CommonValues">
+                    [class.correct]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ArrayComparisonResult.Same"
+                    [class.wrong]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ArrayComparisonResult.NoCommonValues"
+                    [class.partial]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ArrayComparisonResult.CommonValues">
                     <ng-container *ngFor="let egggroup of element.egggroup; let last = last">
-                        {{ egggroup?.name }}<span *ngIf="!last">, </span>
+                        {{ egggroup?.pokemon_v2_egggroup?.name }}<span *ngIf="!last">, </span>
                     </ng-container>
                 </td>
             </ng-container>

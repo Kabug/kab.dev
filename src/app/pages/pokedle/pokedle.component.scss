@@ -5,11 +5,18 @@ $red2: #cc0000;
 $blue1: #3b4cca;
 $yellow1: #ffde00;
 $yellow2: #b3a125;
+$green1: #C6DE54;
+$green2: #001100;
 
 .container {
   @media #{$lg}, #{$xl} {
     display: flex;
   }
+  th, input, mat-label {
+    font-family: 'digital', sans-serif;
+  }
+
+  font-family: 'digital', sans-serif;
 
   flex-direction: column;
   width: 100%;
@@ -20,8 +27,15 @@ $yellow2: #b3a125;
   .inner-container {
     display: flex;
     justify-content: center;
-    padding: 20px;
+    padding: 10px;
     overflow: auto;
+  }
+
+  .title-container {
+    padding: 0;
+    .title {
+      max-width: 300px;
+    }
   }
 
   .pokedex-title-container {
@@ -32,12 +46,36 @@ $yellow2: #b3a125;
     }
   }
 
+  .pokedex-screens-container {
+    display: flex;
+  }
+
+  .pokedex-stats-container {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    border: 4px solid $red1;
+    text-transform: capitalize;
+    font-size: $header;
+    font-family: 'digital', sans-serif;
+    background-color: $green1;
+    color: $green2;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+    rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    min-height: 360px;
+
+    .pokedex-stat {
+      margin: 5px;
+    }
+  }
+
   .pokedex-container {
     border-top-left-radius: 25px;
     display: flex;
     flex-direction: column;
     padding: 0;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    margin-bottom: 20px;
     ::-webkit-scrollbar {
       width: 10px;
     }
@@ -48,7 +86,7 @@ $yellow2: #b3a125;
     }
 
     ::-webkit-scrollbar-thumb {
-      background-color: $red2;
+      background-color: $yellow2;
     }
   }
 
@@ -66,6 +104,7 @@ $yellow2: #b3a125;
   }
 
   .poke-form {
+    overflow: hidden;
     .poke-form-field {
       width: 300px;
     }
@@ -90,6 +129,8 @@ $yellow2: #b3a125;
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: $body;
+    overflow: visible ;
   }
 
   .guess-table {
@@ -171,7 +212,7 @@ $yellow2: #b3a125;
   box-shadow: inset -4px -2px 0 0 rgba(0, 0, 0, 0.2);
   animation: fall 0.5s ease-in-out 1s,
     shake 1.25s cubic-bezier(0.36, 0.07, 0.19, 0.97) 1.5s 3,
-    // catch 0.5s ease-out 5.25s forwards
+    catch 0.5s ease-out 5.25s forwards
 ;
 }
 /* Animation */
@@ -209,8 +250,8 @@ $yellow2: #b3a125;
     transform: translateY(0);
   }
 }
-// @keyframes catch {
-//   to {
-//     filter: saturate(0.8) brightness(0.8);
-//   }
-// }
+@keyframes catch {
+  to {
+    filter: saturate(0.8) brightness(0.8);
+  }
+}
