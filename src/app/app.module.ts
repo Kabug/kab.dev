@@ -18,6 +18,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { PokedleComponent } from "./pages/pokedle/pokedle.component";
 import { PokemonCardComponent } from "./components/pokemon-card/pokemon-card.component";
+import { GraphQLModule } from './graphql.module';
 
 @NgModule({
   declarations: [AppComponent, PokedleComponent, PokemonCardComponent],
@@ -35,7 +36,8 @@ import { PokemonCardComponent } from "./components/pokemon-card/pokemon-card.com
     MatProgressSpinnerModule,
     LayoutModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    GraphQLModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -134,6 +134,10 @@ export class PokedleComponent {
     } catch (error) {
       console.error(error);
     }
+    this.pokeService.getAllPokemonGQL().subscribe((response: any) => {
+      // Handle the response here
+      console.log("Pokemon data:", response.data);
+    });
     this.loading = false;
   }
 
