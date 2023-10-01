@@ -155,9 +155,7 @@ export class PokedleComponent {
   async fetchData(): Promise<void> {
     try {
       const fetchData = await firstValueFrom(this.dataService.getData());
-      console.log("hello");
       this.allPokemon = fetchData?.data?.pokemon_v2_pokemon;
-      console.log(fetchData); // You can now use this.allPokemon in your component
     } catch (error) {
       console.error(error);
       if (!data) {

@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://www.https.kab.dev/api/pokedata',
+  apiUrl: 'https://kab-dev.herokuapp.com/api/pokedata',
 };
