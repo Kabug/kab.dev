@@ -96,6 +96,9 @@ async function fetchDataAndSaveToFile() {
     // Save the GraphQL response data to a file
     const dataFilePath = path.join(__dirname, "src/assets/data.json");
     await saveDataToFile(dataFilePath, response.data);
+    const distFilePath = path.join(__dirname, "dist/kab-dev/assets/data.json");
+    await saveDataToFile(distFilePath, response.data);
+
 
     console.log("Data fetched from GraphQL and saved successfully.");
   } catch (error) {
