@@ -2,6 +2,10 @@
   filter: grayscale(100%);
 }
 
+img {
+  max-width: 72px;
+}
+
 img:hover {
   cursor: pointer;
 }

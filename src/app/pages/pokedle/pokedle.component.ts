@@ -30,6 +30,7 @@ export interface PokemonStats {
   egggroup: [];
   weight: number;
   stats: number;
+  species: string;
 }
 export interface AllPokemonPage {
   count: number;
@@ -76,6 +77,7 @@ export class PokedleComponent {
     egggroup: [],
     weight: 0,
     stats: 0,
+    species: ""
   };
   correctlyGuessed: PokemonStats = {
     name: "",
@@ -87,6 +89,7 @@ export class PokedleComponent {
     egggroup: [],
     weight: 0,
     stats: 0,
+    species: ""
   };
   hoveredPokemon: any;
   guesses = 0;
@@ -145,6 +148,7 @@ export class PokedleComponent {
         egggroup: pokemonEggData?.egg_groups,
         weight: this.pokemonData?.weight / 10,
         stats: totalBaseStat,
+        species: this.pokemonData?.pokemon_v2_pokemonspecy.name
       };
     } catch (error) {
       console.error(error);
@@ -155,16 +159,22 @@ export class PokedleComponent {
   async fetchData(): Promise<void> {
     try {
       const fetchData = await firstValueFrom(this.dataService.getData());
-      this.allPokemon = fetchData?.data?.pokemon_v2_pokemon;
+      this.allPokemon = [];
+      this.filterPokemon(fetchData?.data?.pokemon_v2_pokemon);
     } catch (error) {
       console.error(error);
       if (!data) {
         return;
       }
       console.log("resorting to backup");
+      this.allPokemon = [];
       // @ts-ignore
-      this.allPokemon = data.data.pokemon_v2_pokemon;
+      this.filterPokemon(data?.data?.pokemon_v2_pokemon);
     }
+  }
+
+  filterPokemon(unfilteredPokemon: any) {
+    this.allPokemon = unfilteredPokemon;
   }
   
 
@@ -193,20 +203,9 @@ export class PokedleComponent {
       egggroup: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonegggroups,
       weight: pokemon?.weight / 10,
       stats: totalBaseStat,
+      species: pokemon?.pokemon_v2_pokemonspecy?.name
     };
     return pokemonObj;
-  }
-
-  async getAllPokemon() {
-    this.loading = true;
-
-    try {
-      this.allPokemon = await firstValueFrom(this.pokeService.getAllPokemon());
-      // console.log(this.allPokemon);
-    } catch (error) {
-      console.error(error);
-    }
-    this.loading = false;
   }
 
   getRandomPokemon() {
@@ -247,14 +246,19 @@ export class PokedleComponent {
       this.openDialog();
       return;
     }
-    this.guesses += 1;
-    const pokemon = this.allPokemon?.find(
-      (pokemon: { name: (string | undefined)[] }) =>
-        pokemon?.name.includes(this.pokeInputControl.value?.toLowerCase())
-    );
+    let pokemon: { name: string } | undefined = undefined;
+
+    const inputValue = this.pokeInputControl.value?.toLowerCase();
+    
+    if (inputValue) {
+      pokemon = this.allPokemon?.find((p: { name: string }) =>
+        p.name.toLowerCase() === inputValue
+      );
+    }
     if (!pokemon) {
       return;
     }
+    this.guesses += 1;
     this.dataSource?.data.unshift(this.createPokemonObj(pokemon));
     this.dataSource._updateChangeSubscription();
 

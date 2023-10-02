@@ -1,9 +1,37 @@
-<img *ngIf="!imageError1" src="https://img.pokemondb.net/sprites/sword-shield/icon/{{pokemon?.name}}.png"
+<!-- <img *ngIf="!imageError1" src="https://img.pokemondb.net/sprites/sword-shield/icon/{{pokemonStats.species}}.png"
     (error)="handleImageError($event)" (click)="hideItem()" [class.invisible]="hidden"
-    alt="{{pokemon?.name}}" title="{{pokemon?.name}}"
+    alt="{{pokemonStats.species}}" title="{{pokemonStats.species}}"
     (mouseenter)="onMouseEnter()"/>
 <img *ngIf="imageError1 && !imageError2"
-    src="https://img.pokemondb.net/sprites/scarlet-violet/icon/{{pokemon?.name}}.png"
+    src="https://img.pokemondb.net/sprites/scarlet-violet/icon/{{pokemonStats.species}}.png"
     (error)="handleImageError2($event)" (click)="hideItem()" [class.invisible]="hidden" 
-    alt="{{pokemon?.name}}" title="{{pokemon?.name}}"
-    (mouseenter)="onMouseEnter()"/>
+    alt="{{pokemonStats.species}}" title="{{pokemonStats.species}}"
+    (mouseenter)="onMouseEnter()"/> -->
+<ng-container *ngIf="!imageErrors.imageError1; else elseBlock1">
+    <img src="https://img.pokemondb.net/sprites/home/normal/1x/{{pokemonStats.name}}.png"
+        (error)="handleImageError('imageError1')" (click)="hideItem()" [class.invisible]="hidden"
+        alt="{{pokemonStats.name}}" title="{{pokemonStats.name}}"
+        (mouseenter)="onMouseEnter()" />
+</ng-container>
+<ng-template #elseBlock1>
+    <ng-container  *ngIf="!imageErrors.imageError2; else elseBlock2">
+    <img src="https://img.pokemondb.net/sprites/scarlet-violet/icon/{{pokemonStats.name}}.png"
+        (error)="handleImageError('imageError2')" (click)="hideItem()" [class.invisible]="hidden"
+        alt="{{pokemonStats.name}}" title="{{pokemonStats.name}}"
+        (mouseenter)="onMouseEnter()" />
+    </ng-container>
+    <ng-template #elseBlock2>
+        <ng-container *ngIf="!imageErrors.imageError3; else elseBlock3">
+            <img src="https://img.pokemondb.net/sprites/sword-shield/icon/{{pokemonStats.species}}.png"
+            (error)="handleImageError('imageError3')" (click)="hideItem()" [class.invisible]="hidden"
+            alt="{{pokemonStats.species}}" title="{{pokemonStats.species}}"
+            (mouseenter)="onMouseEnter()" />
+        </ng-container>
+        <ng-template #elseBlock3>
+            <img src="https://img.pokemondb.net/sprites/scarlet-violet/icon/{{pokemonStats.species}}.png"
+            (error)="handleImageError('imageError4')" (click)="hideItem()" [class.invisible]="hidden"
+            alt="{{pokemonStats.species}}" title="{{pokemonStats.species}}"
+            (mouseenter)="onMouseEnter()" />
+        </ng-template>
+    </ng-template>
+</ng-template>

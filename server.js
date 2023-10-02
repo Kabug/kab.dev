@@ -14,8 +14,8 @@ app.use(express.static("./dist/kab-dev"));
 app.use(fileUpload());
 
 app.get("/api/pokedata", (req, res) => {
-  res.header("Content-Type",'application/json');
-  res.sendFile(path.join(__dirname, 'pokedata.json'));
+  res.header("Content-Type", "application/json");
+  res.sendFile(path.join(__dirname, "pokedata.json"));
 });
 
 app.get("/*", (req, res) =>
@@ -47,64 +47,75 @@ async function fetchDataAndSaveToFile() {
       "https://beta.pokeapi.co/graphql/v1beta",
       {
         query: `
-          query samplePokeAPIquery {
-            pokemon_v2_pokemon {
-              height
-              id
+        query allPokeAPIquery {
+          pokemon_v2_pokemon(where: { 
+            pokemon_v2_pokemonforms: {
+              is_default: { _eq: true },
+              form_name: { _in: ["", "50", "a", "aria", "alola", "amped", "apex-build", "black", "shield", "green-plumage", "red-striped", "blue-striped", "resolute", "icy-snow", "normal", "chest", "complete", "confined", "crowned", "curly", "dawn", "disguised", "dusk", "eternamax", "family-of-four", "fan", "female", "frost", "full-belly", "galar", "galar-standard", "galar-zen", "hangry", "heat", "hisui", "ice", "incarnate", "land", "male", "mega", "mega-x", "mega-y", "midday", "midnight", "mow", "natural", "ordinary", "original", "overcast", "pau", "phony", "pirouette", "pom-pom", "primal", "rainy", "rapid-strike", "resolute", "sandy", "sensu", "shadow", "school", "sky", "snowy", "solo", "spring", "standard", "sunny", "therian", "small", "large", "super", "trash", "two-segment", "ultimate-mode", "ultra", "unbound", "vanilla-cream", "wash", "west", "white", "white-striped", "zen", "zero"]
+              }
+            }
+          }) {
+            height
+            id
+            name
+            order
+            is_default
+            pokemon_v2_pokemonforms {
+              form_name
+              is_default
               name
-              order
-              pokemon_species_id
-              weight
-              pokemon_v2_pokemonstats {
-                base_stat
+              form_order
+            }
+            pokemon_species_id
+            weight
+            pokemon_v2_pokemonstats {
+              base_stat
+            }
+            pokemon_v2_pokemonsprites {
+              id
+              sprites
+            }
+            pokemon_v2_pokemonabilities {
+              ability_id
+              pokemon_id
+              pokemon_v2_ability {
+                name
               }
-              pokemon_v2_pokemonsprites {
+            }
+            pokemon_v2_pokemontypes {
+              pokemon_v2_type {
+                name
+              }
+            }
+            pokemon_v2_pokemonspecy {
+              name
+              pokemon_v2_pokemoncolor {
+                name
+              }
+              pokemon_v2_generation {
                 id
-                sprites
+                name
               }
-              pokemon_v2_pokemonabilities {
-                ability_id
-                pokemon_id
-                pokemon_v2_ability {
+              pokemon_v2_pokemonegggroups {
+                pokemon_v2_egggroup {
                   name
                 }
               }
-              pokemon_v2_pokemontypes {
-                pokemon_v2_type {
-                  name
-                }
+              pokemon_v2_pokemonshape {
+                name
               }
-              pokemon_v2_pokemonspecy {
-                pokemon_v2_pokemoncolor {
-                  name
-                }
-                pokemon_v2_generation {
-                  id
-                  name
-                }
-                pokemon_v2_pokemonegggroups {
-                  pokemon_v2_egggroup {
-                    name
-                  }
-                }
-                pokemon_v2_pokemonshape {
-                  name
-                }
-                pokemon_v2_pokemonspeciesflavortexts(
-                  where: { language_id: { _eq: 9 } }
-                ) {
-                  flavor_text
-                }
+              pokemon_v2_pokemonspeciesflavortexts(where: {language_id: {_eq: 9}}) {
+                flavor_text
               }
             }
           }
+        }
         `,
       }
     );
     // Save the GraphQL response data to a file
     const dataFilePath = path.join(__dirname, "pokedata.json");
     await saveDataToFile(dataFilePath, response.data);
-
 
     console.log("Data fetched from GraphQL and saved successfully.");
   } catch (error) {

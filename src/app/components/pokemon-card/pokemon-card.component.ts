@@ -17,14 +17,19 @@ export class PokemonCardComponent {
     egggroup: [],
     weight: 0,
     stats: 0,
+    species: ""
   };
 
   @Input() pokemon: any; // Input property to receive Pokemon data from parent component
 
   @Output() hoverEvent = new EventEmitter<PokemonStats>();
 
-  imageError1 = false;
-  imageError2 = false;
+  imageErrors: { [key: string]: boolean } = {
+    imageError1: false,
+    imageError2:false,
+    imageError3: false,
+    imageError4: false
+  };
   hidden = false;
 
   ngOnInit() {
@@ -35,7 +40,6 @@ export class PokemonCardComponent {
     if (!pokemon) {
       return;
     }
-
     const sprite =
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
       pokemon?.id +
@@ -45,8 +49,28 @@ export class PokemonCardComponent {
       totalBaseStat += stat.base_stat;
     });
 
+    let name = pokemon?.name;
+    if (name.endsWith("-alola")) {
+      name += "n";
+    } else if (name.endsWith("-galar")) {
+      name += "ian"
+    } else if (name.endsWith("-hisui")) {
+      name += "an"
+    } else if (name.endsWith("-dusk")) {
+      name += "-mane"
+    } else if (name.endsWith("-dawn")) {
+      name += "-wings"
+    } else if (name.includes("-galar-")) {
+      return name.replace("-galar-", "-galarian-");
+    } else if (name.endsWith("-ice")) {
+      name += "-rider"
+    } else if (name.endsWith("-shadow")) {
+      name += "-rider"
+    }
+    
+
     const pokemonObj: any = {
-      name: pokemon?.name,
+      name: name,
       image: sprite,
       type1: pokemon?.pokemon_v2_pokemontypes[0]?.pokemon_v2_type?.name,
       type2:
@@ -56,17 +80,13 @@ export class PokemonCardComponent {
       egggroup: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonegggroups,
       weight: pokemon?.weight / 10,
       stats: totalBaseStat,
+      species: pokemon?.pokemon_v2_pokemonspecy?.name
     };
-
     return pokemonObj;
   }
 
-  handleImageError(event: Event) {
-    this.imageError1 = true;
-  }
-
-  handleImageError2(event: Event) {
-    this.imageError2 = true;
+  handleImageError(errorFlag: string) {
+    this.imageErrors[errorFlag] = true;
   }
 
   hideItem() {
