@@ -112,7 +112,7 @@ export class PokedleComponent {
   };
   hoveredPokemon: any;
   guesses = 0;
-  maxGuesses = 6;
+  maxGuesses = 8;
   loading = false;
   customColor = "red";
 

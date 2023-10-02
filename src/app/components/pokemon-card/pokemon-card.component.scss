@@ -1,9 +1,15 @@
+@import "../../styles/_variables";
+
 .invisible {
   filter: grayscale(100%);
 }
 
 img {
-  max-width: 72px;
+  max-width: 48px;
+
+  @media #{$lg}, #{$xl} { 
+    max-width: 72px;
+  }
 }
 
 img:hover {
