@@ -26,12 +26,31 @@ export interface PokemonStats {
   type1: string;
   type2: string;
   color: string;
-  abilities: [];
-  egggroup: [];
+  abilities: Abilities[];
+  egggroup: EggGroups[];
   weight: number;
   stats: number;
   species: string;
 }
+
+export interface Abilities {
+  ability_id: number;
+  pokemon_id: number;
+  pokemon_v2_ability: Ability;
+}
+
+export interface Ability {
+  name: string;
+}
+
+export interface EggGroups {
+  pokemon_v2_pokemonegggroups: EggGroup[];
+}
+
+export interface EggGroup {
+  name: string;
+}
+
 export interface AllPokemonPage {
   count: number;
   next: number | undefined;
@@ -77,7 +96,7 @@ export class PokedleComponent {
     egggroup: [],
     weight: 0,
     stats: 0,
-    species: ""
+    species: "",
   };
   correctlyGuessed: PokemonStats = {
     name: "",
@@ -89,11 +108,11 @@ export class PokedleComponent {
     egggroup: [],
     weight: 0,
     stats: 0,
-    species: ""
+    species: "",
   };
   hoveredPokemon: any;
   guesses = 0;
-  maxGuesses = 10;
+  maxGuesses = 6;
   loading = false;
   customColor = "red";
 
@@ -148,7 +167,7 @@ export class PokedleComponent {
         egggroup: pokemonEggData?.egg_groups,
         weight: this.pokemonData?.weight / 10,
         stats: totalBaseStat,
-        species: this.pokemonData?.pokemon_v2_pokemonspecy.name
+        species: this.pokemonData?.pokemon_v2_pokemonspecy.name,
       };
     } catch (error) {
       console.error(error);
@@ -176,7 +195,6 @@ export class PokedleComponent {
   filterPokemon(unfilteredPokemon: any) {
     this.allPokemon = unfilteredPokemon;
   }
-  
 
   createPokemonObj(pokemon: any) {
     if (!pokemon) {
@@ -203,7 +221,7 @@ export class PokedleComponent {
       egggroup: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonegggroups,
       weight: pokemon?.weight / 10,
       stats: totalBaseStat,
-      species: pokemon?.pokemon_v2_pokemonspecy?.name
+      species: pokemon?.pokemon_v2_pokemonspecy?.name,
     };
     return pokemonObj;
   }
@@ -249,23 +267,27 @@ export class PokedleComponent {
     let pokemon: { name: string } | undefined = undefined;
 
     const inputValue = this.pokeInputControl.value?.toLowerCase();
-    
+
     if (inputValue) {
-      pokemon = this.allPokemon?.find((p: { name: string }) =>
-        p.name.toLowerCase() === inputValue
+      pokemon = this.allPokemon?.find(
+        (p: { name: string }) => p.name.toLowerCase() === inputValue
       );
     }
     if (!pokemon) {
       return;
     }
     this.guesses += 1;
-    this.dataSource?.data.unshift(this.createPokemonObj(pokemon));
+    const formatPokemon = this.createPokemonObj(pokemon);
+    this.dataSource?.data.unshift(formatPokemon);
     this.dataSource._updateChangeSubscription();
 
     this.allPokemon = this.allPokemon.filter(
       (pokemonObj: { name: any }) => pokemonObj.name !== pokemon?.name
     );
     this.pokeInputControl.setValue("");
+
+    this.extractSimilarValues(formatPokemon);
+
     if (pokemon?.name === this.todaysPokemon.name) {
       this.gameState = GAME_STATE.WIN;
       this.openDialog();
@@ -277,6 +299,61 @@ export class PokedleComponent {
       this.openDialog();
       return;
     }
+  }
+
+  extractSimilarValues(obj: PokemonStats) {
+    let abilities: Abilities[] = [];
+    if (this.compareArrays(obj.abilities, this.todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ArrayComparisonResult.Same) {
+      abilities = obj.abilities;
+    }
+    let egggroup: EggGroups[] = [];
+    if (this.compareArrays(obj.egggroup, this.todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ArrayComparisonResult.Same) {
+      egggroup = obj.egggroup;
+    }
+    const similarValues: PokemonStats = {
+      name: this.todaysPokemon.name === obj.name ? this.todaysPokemon.name : "",
+      image: this.todaysPokemon.image === obj.image ? this.todaysPokemon.image : "",
+      type1: this.todaysPokemon.type1 === obj.type1 ? this.todaysPokemon.type1 : "",
+      type2: this.todaysPokemon.type2 === obj.type2 ? this.todaysPokemon.type2 : "",
+      color: this.todaysPokemon.color === obj.color ? this.todaysPokemon.color : "",
+      abilities: abilities,
+      egggroup: egggroup,
+      weight: this.todaysPokemon.weight === obj.weight ? this.todaysPokemon.weight : 0,
+      stats: this.todaysPokemon.stats === obj.stats ? this.todaysPokemon.stats : 0,
+      species: this.todaysPokemon.species === obj.species ? this.todaysPokemon.species : "",
+    };
+
+    if (!this.correctlyGuessed.name && similarValues.name) {
+      this.correctlyGuessed.name = similarValues.name;
+    }
+    if (!this.correctlyGuessed.image && similarValues.image) {
+      this.correctlyGuessed.image = similarValues.image;
+    }
+    if (!this.correctlyGuessed.type1 && similarValues.type1) {
+      this.correctlyGuessed.type1 = similarValues.type1;
+    }
+    if (!this.correctlyGuessed.type2 && similarValues.type2) {
+      this.correctlyGuessed.type2 = similarValues.type2;
+    }
+    if (!this.correctlyGuessed.color && similarValues.color) {
+      this.correctlyGuessed.color = similarValues.color;
+    }
+    if (!this.correctlyGuessed.weight && similarValues.weight) {
+      this.correctlyGuessed.weight = similarValues.weight;
+    }
+    if (!this.correctlyGuessed.stats && similarValues.stats) {
+      this.correctlyGuessed.stats = similarValues.stats;
+    }
+    if (!this.correctlyGuessed.species && similarValues.species) {
+      this.correctlyGuessed.species = similarValues.species;
+    }
+    if (this.correctlyGuessed.abilities.length === 0 && similarValues.abilities) {
+      this.correctlyGuessed.abilities = similarValues.abilities;
+    }
+    if (this.correctlyGuessed.egggroup.length === 0 && similarValues.egggroup) {
+      this.correctlyGuessed.egggroup = similarValues.egggroup;
+    }
+    this.correctlyGuessed = {...this.correctlyGuessed};
   }
 
   compareArrays(
