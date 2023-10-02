@@ -51,6 +51,10 @@ $green2: #001100;
   }
 
   .pokedex-stats-container {
+    min-width: 100px;
+    @media #{$lg}, #{$xl} {
+      min-width: 200px;
+    }
     width: 100%;
     flex: 1;
     display: flex;
