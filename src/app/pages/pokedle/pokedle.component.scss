@@ -71,7 +71,12 @@ $green2: #001100;
     min-height: 360px;
 
     .pokedex-stat {
+      word-break: break-word;
       margin: 5px;
+      font-size: 20px;
+      @media #{$lg}, #{$xl} {
+        font-size: $header;
+      }
     }
   }
 
