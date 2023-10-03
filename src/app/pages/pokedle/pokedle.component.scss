@@ -52,6 +52,7 @@ $green2: #001100;
 
   .pokedex-stats-container {
     min-width: 100px;
+    max-width: 200px;
     @media #{$lg}, #{$xl} {
       min-width: 200px;
     }
