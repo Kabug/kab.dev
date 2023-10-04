@@ -201,6 +201,24 @@ $green2: #001100;
       text-transform: capitalize;
     }
   }
+
+  .streak-container {
+    flex-direction: column;
+  }
+}
+
+.dialog-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  .button-container {
+    align-self: flex-end;
+    .button {
+      background-color: $blue1;
+      color: white;
+    }
+  }
 }
 
 .poke-suggest {

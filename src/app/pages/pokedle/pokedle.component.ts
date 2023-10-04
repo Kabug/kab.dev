@@ -136,6 +136,9 @@ export class PokedleComponent {
   dataSource: MatTableDataSource<PokemonStats> =
     new MatTableDataSource<PokemonStats>();
 
+  maxStreak = 0;
+  currentStreak = 0;
+
   constructor(
     private pokeService: PokeService,
     private dialog: MatDialog,
@@ -150,6 +153,22 @@ export class PokedleComponent {
 
     this.getRandomPokemon();
     this.hoveredPokemon = this.createPokemonObj(this.allPokemon?.[0]);
+
+    const maxStreakString = localStorage.getItem("maxStreak");
+    if (maxStreakString !== null) {
+      const parsedMaxStreak = parseInt(maxStreakString, 10);
+      if (!isNaN(parsedMaxStreak)) {
+        this.maxStreak = parsedMaxStreak;
+      }
+    }
+
+    const currentStreakString = localStorage.getItem("currentStreak");
+    if (currentStreakString !== null) {
+      const parsedCurrentStreak = parseInt(currentStreakString, 10);
+      if (!isNaN(parsedCurrentStreak)) {
+        this.currentStreak = parsedCurrentStreak;
+      }
+    }
 
     const savedDate = localStorage.getItem("savedDate");
 
@@ -176,10 +195,10 @@ export class PokedleComponent {
           this.allPokemon = this.allPokemon.filter(
             (pokemonObj: { name: any }) => pokemonObj.name !== pokemon?.name
           );
-      
+
           this.extractSimilarValues(pokemon);
         });
-        
+
         this.dataSource.data = previousGuesses;
         this.dataSource._updateChangeSubscription();
       }
@@ -273,7 +292,8 @@ export class PokedleComponent {
 
   onSubmit(event: any) {
     event.preventDefault();
-    if (this.loading || this.gameState === this.GAME_STATE.WIN) {
+    if (this.gameState === this.GAME_STATE.WIN) {
+      this.openDialog();
       return;
     }
     if (!this.pokeInputControl.value) {
@@ -326,22 +346,21 @@ export class PokedleComponent {
           lastCorrectDate,
           this.currentDate
         );
-        let currentStreak = localStorage.getItem("currentStreak");
-        let currentStreakAsNumber = 1;
-        if (currentStreak && daysDifference === 1) {
-          currentStreakAsNumber = parseInt(currentStreak, 10) + 1;
-        }
-        let maxStreak = localStorage.getItem("maxStreak");
-        if (maxStreak) {
-          let maxStreakAsNumber = parseInt(maxStreak, 10);
 
-          if (maxStreakAsNumber < currentStreakAsNumber) {
-            localStorage.setItem("maxStreak", currentStreakAsNumber.toString());
-          }
+        if (this.currentStreak > 1 && daysDifference === 1) {
+          this.currentStreak += 1;
+        } else {
+          this.currentStreak = 1;
         }
-
-        localStorage.setItem("currentStreak", currentStreakAsNumber.toString());
+      } else {
+        this.currentStreak = 1;
       }
+
+      if (this.maxStreak < this.currentStreak) {
+        this.maxStreak = this.currentStreak;
+        localStorage.setItem("maxStreak", this.currentStreak.toString());
+      }
+      localStorage.setItem("currentStreak", this.currentStreak.toString());
       localStorage.setItem("lastCorrectDate", this.currentDate);
       localStorage.setItem("gameState", this.GAME_STATE.WIN);
     } else if (
@@ -477,7 +496,10 @@ export class PokedleComponent {
       this.correctlyGuessed.egggroup = similarValues.egggroup;
     }
     this.correctlyGuessed = { ...this.correctlyGuessed };
-    localStorage.setItem("correctlyGuessed", JSON.stringify(this.correctlyGuessed));
+    localStorage.setItem(
+      "correctlyGuessed",
+      JSON.stringify(this.correctlyGuessed)
+    );
   }
 
   compareArrays(
