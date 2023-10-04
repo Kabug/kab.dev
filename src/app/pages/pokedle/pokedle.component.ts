@@ -102,6 +102,20 @@ export class PokedleComponent {
     species: "",
     description: "",
   };
+  yesterdaysPokemon: PokemonStats = {
+    displayName: "",
+    name: "",
+    image: "",
+    type1: "",
+    type2: "",
+    color: "",
+    abilities: [],
+    egggroup: [],
+    weight: 0,
+    stats: 0,
+    species: "",
+    description: "",
+  };
   correctlyGuessed: PokemonStats = {
     displayName: "",
     name: "",
@@ -151,7 +165,16 @@ export class PokedleComponent {
       this.onPokeInput();
     });
 
-    this.getRandomPokemon();
+    this.todaysPokemon = this.getRandomPokemon(this.currentDate);
+    const currentDate = new Date(this.currentDate);
+
+    // Calculate yesterday's date by subtracting one day (24 hours)
+    const yesterdaysDate = new Date(
+      currentDate.getTime() - 24 * 60 * 60 * 1000
+    );
+    this.yesterdaysPokemon = this.getRandomPokemon(
+      yesterdaysDate.toISOString()
+    );
     this.hoveredPokemon = this.createPokemonObj(this.allPokemon?.[0]);
 
     const maxStreakString = localStorage.getItem("maxStreak");
@@ -270,15 +293,13 @@ export class PokedleComponent {
     return pokemonObj;
   }
 
-  getRandomPokemon() {
-    let seed = parseInt(this.currentDate.split("T", 1)[0].replace(/\D/g, ""));
+  getRandomPokemon(date: string) {
+    let seed = parseInt(date.split("T", 1)[0].replace(/\D/g, ""));
     var x = Math.sin(seed++) * 10000;
     const randomNum = Math.round(
       this.allPokemon?.length * Math.abs(x - Math.floor(x))
     ).toString();
-    if (randomNum) {
-      this.todaysPokemon = this.createPokemonObj(this.allPokemon?.[randomNum]);
-    }
+    return this.createPokemonObj(this.allPokemon?.[randomNum]);
   }
 
   // Make a better search later
