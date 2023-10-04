@@ -7,7 +7,7 @@
 img {
   max-width: 48px;
 
-  @media #{$lg}, #{$xl} { 
+  @media #{$lg}, #{$xl}, #{$md} { 
     max-width: 72px;
   }
 }
