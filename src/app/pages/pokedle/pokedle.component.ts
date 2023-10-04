@@ -32,6 +32,7 @@ export interface PokemonStats {
   weight: number;
   stats: number;
   species: string;
+  description: string;
 }
 
 export interface Abilities {
@@ -99,6 +100,7 @@ export class PokedleComponent {
     weight: 0,
     stats: 0,
     species: "",
+    description: ""
   };
   correctlyGuessed: PokemonStats = {
     displayName: "",
@@ -112,6 +114,7 @@ export class PokedleComponent {
     weight: 0,
     stats: 0,
     species: "",
+    description: ""
   };
   hoveredPokemon: any;
   guesses = 0;
@@ -147,38 +150,6 @@ export class PokedleComponent {
     this.hoveredPokemon = this.createPokemonObj(this.allPokemon?.[0]);
   }
 
-  async getPokemonByUrl(url: string) {
-    this.loading = true;
-    try {
-      this.pokemonData = await firstValueFrom(
-        this.pokeService.getPokemonByUrl(url)
-      );
-      let totalBaseStat = 0;
-      this.pokemonData?.stats.forEach((stat: { base_stat: number }) => {
-        totalBaseStat += stat.base_stat;
-      });
-      const pokemonEggData: any = await firstValueFrom(
-        this.pokeService.getPokemonEgg(this.pokemonData?.species?.name)
-      );
-      this.todaysPokemon = {
-        displayName: this.pokemonData.name,
-        name: this.pokemonData.name,
-        image: this.pokemonData?.sprites?.front_default,
-        type1: this.pokemonData?.types[0],
-        type2: this.pokemonData?.types[1],
-        color: pokemonEggData?.color?.name,
-        abilities: this.pokemonData?.abilities,
-        egggroup: pokemonEggData?.egg_groups,
-        weight: this.pokemonData?.weight / 10,
-        stats: totalBaseStat,
-        species: this.pokemonData?.pokemon_v2_pokemonspecy.name,
-      };
-    } catch (error) {
-      console.error(error);
-    }
-    this.loading = false;
-  }
-
   async fetchData(): Promise<void> {
     try {
       const fetchData = await firstValueFrom(this.dataService.getData());
@@ -201,9 +172,6 @@ export class PokedleComponent {
   }
 
   createPokemonObj(pokemon: any) {
-    if (!pokemon) {
-      return;
-    }
 
     const sprite =
       "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
@@ -214,18 +182,19 @@ export class PokedleComponent {
       totalBaseStat += stat.base_stat;
     });
 
-    const pokemonObj: any = {
+    const pokemonObj: PokemonStats = {
       name: pokemon?.name,
       image: sprite,
       type1: pokemon?.pokemon_v2_pokemontypes[0]?.pokemon_v2_type?.name,
-      type2:
-        pokemon?.pokemon_v2_pokemontypes[1]?.pokemon_v2_type?.name ?? "N/A",
+      type2: pokemon?.pokemon_v2_pokemontypes[1]?.pokemon_v2_type?.name ?? "N/A",
       color: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemoncolor?.name,
       abilities: pokemon?.pokemon_v2_pokemonabilities,
       egggroup: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonegggroups,
       weight: pokemon?.weight / 10,
       stats: totalBaseStat,
       species: pokemon?.pokemon_v2_pokemonspecy?.name,
+      description: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesflavortexts?.[0]?.flavor_text.replace(/[\n\f]/g, " ").replace("é", "e"),
+      displayName: pokemon?.name
     };
     return pokemonObj;
   }
@@ -241,6 +210,7 @@ export class PokedleComponent {
     if (randomNum) {
       this.todaysPokemon = this.createPokemonObj(this.allPokemon?.[randomNum]);
     }
+    console.log(this.todaysPokemon);
   }
 
   // Make a better search later
@@ -326,6 +296,7 @@ export class PokedleComponent {
       weight: this.todaysPokemon.weight === obj.weight ? this.todaysPokemon.weight : 0,
       stats: this.todaysPokemon.stats === obj.stats ? this.todaysPokemon.stats : 0,
       species: this.todaysPokemon.species === obj.species ? this.todaysPokemon.species : "",
+      description: this.todaysPokemon.description === obj.description ? this.todaysPokemon.description : "",
     };
 
     if (!this.correctlyGuessed.name && similarValues.name) {
@@ -403,7 +374,8 @@ export class PokedleComponent {
   }
 
   
-  onChildClick(pokemon: string) {
-    this.pokeInputControl.setValue(pokemon);
+  onChildClick(pokemon: PokemonStats) {
+    this.hoveredPokemon = pokemon;
+    this.pokeInputControl.setValue(pokemon.name);
   }
 }

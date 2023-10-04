@@ -32,12 +32,13 @@ export class PokemonCardComponent {
     weight: 0,
     stats: 0,
     species: "",
+    description: ""
   };
 
   @Input() pokemon: any; // Input property to receive Pokemon data from parent component
   @Input() correctlyGuessed!: PokemonStats;
   @Output() hoverEvent = new EventEmitter<PokemonStats>();
-  @Output() clickEvent = new EventEmitter<string>();
+  @Output() clickEvent = new EventEmitter<PokemonStats>();
 
   imageErrors: { [key: string]: boolean } = {
     imageError1: false,
@@ -104,6 +105,7 @@ export class PokemonCardComponent {
       weight: pokemon?.weight / 10,
       stats: totalBaseStat,
       species: pokemon?.pokemon_v2_pokemonspecy?.name,
+      description: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonspeciesflavortexts?.[0]?.flavor_text.replace(/[\n\f]/g, " ").replace("é", "e"),
     };
     return pokemonObj;
   }
@@ -214,6 +216,6 @@ export class PokemonCardComponent {
   @HostListener("click", ["$event"])
   onClick(event: Event): void {
     // Emit the event here with this.pokemon.name
-    this.clickEvent.emit(this.pokemon.name);
+    this.clickEvent.emit(this.pokemonStats);
   }
 }

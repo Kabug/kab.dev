@@ -77,6 +77,18 @@ $green2: #001100;
       @media #{$lg}, #{$xl} {
         font-size: $header;
       }
+
+      &-description {
+        font-size: 16px;
+        @media #{$lg}, #{$xl} {
+          font-size: 20px;
+        }
+      }
+    }
+
+    hr {
+      width: 90%;
+      border: 1px solid black;
     }
   }
 

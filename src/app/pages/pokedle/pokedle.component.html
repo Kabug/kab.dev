@@ -49,14 +49,18 @@
                         {{ ability?.pokemon_v2_ability?.name }}<span *ngIf="!last">, </span>
                     </div>
                 </div>
-                <div class="pokedex-stat">
+                <hr />
+                <div class="pokedex-stat pokedex-stat-description">
+                    {{hoveredPokemon?.description}}
+                </div>
+                <!-- <div class="pokedex-stat">
                     Eggroups: 
                     <div *ngFor="let egggroup of hoveredPokemon?.egggroup; let last = last">
                         {{ egggroup?.pokemon_v2_egggroup?.name }}<span *ngIf="!last">, </span>
                     </div>
-                </div>
-                <div class="pokedex-stat">Weight: {{ hoveredPokemon?.weight }}</div>
-                <div class="pokedex-stat">Stats: {{ hoveredPokemon?.stats }}</div>
+                </div> -->
+                <!-- <div class="pokedex-stat">Weight: {{ hoveredPokemon?.weight }}</div>
+                <div class="pokedex-stat">Stats: {{ hoveredPokemon?.stats }}</div> -->
             </div>
         </div>
 
