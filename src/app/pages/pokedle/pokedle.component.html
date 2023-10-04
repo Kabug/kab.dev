@@ -5,7 +5,7 @@
     </div>
     <div class="inner-container">
         <form class="poke-form inner-container">
-            <mat-form-field class="poke-form-field">
+            <mat-form-field class="poke-form-field" subscriptSizing="dynamic">
                 <mat-label>Pokemon Name</mat-label>
                 <input class="poke-input" type="text" placeholder="Larvitar" aria-label="Pokemon" matInput
                     [formControl]="pokeInputControl" [matAutocomplete]="auto" (keydown.enter)="onSubmit($event)" />

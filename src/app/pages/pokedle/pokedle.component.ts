@@ -210,7 +210,6 @@ export class PokedleComponent {
     if (randomNum) {
       this.todaysPokemon = this.createPokemonObj(this.allPokemon?.[randomNum]);
     }
-    console.log(this.todaysPokemon);
   }
 
   // Make a better search later
