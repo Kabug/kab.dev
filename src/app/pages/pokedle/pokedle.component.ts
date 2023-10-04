@@ -292,11 +292,11 @@ export class PokedleComponent {
 
   onSubmit(event: any) {
     event.preventDefault();
-    if (this.gameState === this.GAME_STATE.WIN) {
-      this.openDialog();
+    if (!this.pokeInputControl.value) {
       return;
     }
-    if (!this.pokeInputControl.value) {
+    if (this.gameState === this.GAME_STATE.WIN) {
+      this.openDialog();
       return;
     }
     if (
