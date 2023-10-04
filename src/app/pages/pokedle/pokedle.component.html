@@ -43,12 +43,12 @@
                 <div class="pokedex-stat">Type: {{ hoveredPokemon?.type1 }}</div>
                 <div class="pokedex-stat">Type: {{ hoveredPokemon?.type2 }}</div>
                 <div class="pokedex-stat">Color: {{ hoveredPokemon?.color }}</div>
-                <div class="pokedex-stat">
+                <!-- <div class="pokedex-stat">
                     Abilities: 
                     <div *ngFor="let ability of hoveredPokemon?.abilities; let last = last">
                         {{ ability?.pokemon_v2_ability?.name }}<span *ngIf="!last">, </span>
                     </div>
-                </div>
+                </div> -->
                 <hr />
                 <div class="pokedex-stat pokedex-stat-description">
                     {{hoveredPokemon?.description}}
