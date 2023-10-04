@@ -21,6 +21,7 @@ import { DataService } from "../../services/data.service.ts";
 
 //Need to move this over to services later
 export interface PokemonStats {
+  displayName: string;
   name: string;
   image: string;
   type1: string;
@@ -87,6 +88,7 @@ export class PokedleComponent {
   allPokemon: any;
   suggestedPokemons: any;
   todaysPokemon: PokemonStats = {
+    displayName: "",
     name: "",
     image: "",
     type1: "",
@@ -99,6 +101,7 @@ export class PokedleComponent {
     species: "",
   };
   correctlyGuessed: PokemonStats = {
+    displayName: "",
     name: "",
     image: "",
     type1: "",
@@ -158,6 +161,7 @@ export class PokedleComponent {
         this.pokeService.getPokemonEgg(this.pokemonData?.species?.name)
       );
       this.todaysPokemon = {
+        displayName: this.pokemonData.name,
         name: this.pokemonData.name,
         image: this.pokemonData?.sprites?.front_default,
         type1: this.pokemonData?.types[0],
@@ -311,6 +315,7 @@ export class PokedleComponent {
       egggroup = obj.egggroup;
     }
     const similarValues: PokemonStats = {
+      displayName: this.todaysPokemon.name === obj.name ? this.todaysPokemon.name : "",
       name: this.todaysPokemon.name === obj.name ? this.todaysPokemon.name : "",
       image: this.todaysPokemon.image === obj.image ? this.todaysPokemon.image : "",
       type1: this.todaysPokemon.type1 === obj.type1 ? this.todaysPokemon.type1 : "",
@@ -395,5 +400,10 @@ export class PokedleComponent {
 
   onChildHover(pokemon: PokemonStats) {
     this.hoveredPokemon = pokemon;
+  }
+
+  
+  onChildClick(pokemon: string) {
+    this.pokeInputControl.setValue(pokemon);
   }
 }

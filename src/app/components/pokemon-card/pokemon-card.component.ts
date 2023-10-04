@@ -21,6 +21,7 @@ const ArrayComparisonResult = {
 })
 export class PokemonCardComponent {
   pokemonStats: PokemonStats = {
+    displayName: "",
     name: "",
     image: "",
     type1: "",
@@ -36,6 +37,7 @@ export class PokemonCardComponent {
   @Input() pokemon: any; // Input property to receive Pokemon data from parent component
   @Input() correctlyGuessed!: PokemonStats;
   @Output() hoverEvent = new EventEmitter<PokemonStats>();
+  @Output() clickEvent = new EventEmitter<string>();
 
   imageErrors: { [key: string]: boolean } = {
     imageError1: false,
@@ -90,10 +92,12 @@ export class PokemonCardComponent {
     }
 
     const pokemonObj: any = {
-      name: name,
+      displayName: name,
+      name: pokemon.name,
       image: sprite,
       type1: pokemon?.pokemon_v2_pokemontypes[0]?.pokemon_v2_type?.name,
-      type2: pokemon?.pokemon_v2_pokemontypes[1]?.pokemon_v2_type?.name ?? "N/A",
+      type2:
+        pokemon?.pokemon_v2_pokemontypes[1]?.pokemon_v2_type?.name ?? "N/A",
       color: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemoncolor?.name,
       abilities: pokemon?.pokemon_v2_pokemonabilities,
       egggroup: pokemon?.pokemon_v2_pokemonspecy?.pokemon_v2_pokemonegggroups,
@@ -140,17 +144,32 @@ export class PokemonCardComponent {
       this.hidden = true;
       return;
     }
-    if (this.correctlyGuessed.egggroup.length != 0 && this.compareArrays(this.pokemonStats.egggroup, this.correctlyGuessed.egggroup, 'pokemon_v2_egggroup', 'name') === ArrayComparisonResult.NoCommonValues) {
+    if (
+      this.correctlyGuessed.egggroup.length != 0 &&
+      this.compareArrays(
+        this.pokemonStats.egggroup,
+        this.correctlyGuessed.egggroup,
+        "pokemon_v2_egggroup",
+        "name"
+      ) === ArrayComparisonResult.NoCommonValues
+    ) {
       this.hidden = true;
       return;
     }
-    if (this.correctlyGuessed.abilities.length != 0 && this.compareArrays(this.pokemonStats.abilities, this.correctlyGuessed.abilities, 'pokemon_v2_ability', 'name') === ArrayComparisonResult.NoCommonValues) {
+    if (
+      this.correctlyGuessed.abilities.length != 0 &&
+      this.compareArrays(
+        this.pokemonStats.abilities,
+        this.correctlyGuessed.abilities,
+        "pokemon_v2_ability",
+        "name"
+      ) === ArrayComparisonResult.NoCommonValues
+    ) {
       this.hidden = true;
       return;
     }
   }
 
-  
   compareArrays(
     array1: any[],
     array2: any[],
@@ -190,5 +209,11 @@ export class PokemonCardComponent {
 
   @HostListener("mouseenter") onMouseEnter() {
     this.hoverEvent.emit(this.pokemonStats);
+  }
+
+  @HostListener("click", ["$event"])
+  onClick(event: Event): void {
+    // Emit the event here with this.pokemon.name
+    this.clickEvent.emit(this.pokemon.name);
   }
 }

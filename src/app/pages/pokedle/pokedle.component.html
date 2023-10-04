@@ -35,7 +35,7 @@
             <div class="inner-container pokedex-inner-container">
                 <div class="sprite-container">
                     <app-pokemon-card *ngFor="let pokemon of allPokemon" [pokemon]="pokemon" [correctlyGuessed]="correctlyGuessed"
-                        (hoverEvent)="onChildHover($event)"></app-pokemon-card>
+                        (hoverEvent)="onChildHover($event)" (clickEvent)="onChildClick($event)"></app-pokemon-card>
                 </div>
             </div>
             <div class="pokedex-stats-container">
