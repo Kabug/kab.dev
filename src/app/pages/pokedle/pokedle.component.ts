@@ -208,6 +208,10 @@ export class PokedleComponent {
       this.dataSource.data = [];
       this.dataSource._updateChangeSubscription();
       localStorage.setItem("gameState", this.GAME_STATE.START);
+      localStorage.setItem(
+        "correctlyGuessed",
+        JSON.stringify(this.correctlyGuessed)
+      );
     } else {
       let previousGuesses = JSON.parse(
         localStorage.getItem("guesses") || "null"
