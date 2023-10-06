@@ -164,6 +164,44 @@ export class PokedleComponent {
     this.pokeInputControl.valueChanges.subscribe((newValue) => {
       this.onPokeInput();
     });
+    window.addEventListener("storage", (event: StorageEvent) => {
+      const key = event.key;
+      const newValue = event.newValue;
+    
+      switch (key) {
+        case "guesses":
+          const previousGuesses = JSON.parse(newValue || "null");
+          if (Array.isArray(previousGuesses) && previousGuesses.length > 0) {
+            previousGuesses.forEach((pokemon) => {
+              this.allPokemon = this.allPokemon.filter(
+                (pokemonObj: { name: any }) => pokemonObj.name !== pokemon?.name
+              );
+              this.extractSimilarValues(pokemon);
+            });
+            this.dataSource.data = previousGuesses;
+            this.dataSource._updateChangeSubscription();
+          }
+          break;
+    
+        case "correctlyGuessed":
+          const correctlyGuessed = JSON.parse(newValue || "null");
+          if (correctlyGuessed) {
+            this.correctlyGuessed = correctlyGuessed;
+          }
+          break;
+    
+        case "gameState":
+          const gameState = newValue;
+          if (gameState) {
+            this.gameState = gameState;
+          }
+          break;
+          
+        default:
+          break;
+      }
+    });
+    
 
     const currentDate = new Date(this.currentDate);
     this.todaysPokemon = this.getRandomPokemon(this.currentDate);

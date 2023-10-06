@@ -8,7 +8,7 @@
             <mat-form-field class="poke-form-field" subscriptSizing="dynamic">
                 <mat-label>Pokemon Name</mat-label>
                 <input class="poke-input" type="text" placeholder="Larvitar" aria-label="Pokemon" matInput
-                    [formControl]="pokeInputControl" [matAutocomplete]="auto" (keydown.enter)="onSubmit($event)" />
+                    [formControl]="pokeInputControl" [matAutocomplete]="auto" (keydown.enter)="onSubmit($event)" [attr.disabled]="gameState !== this.GAME_STATE.START"/>
                 <mat-autocomplete #auto="matAutocomplete">
                     <mat-option class="poke-suggest" *ngFor="let pokemon of suggestedPokemons" [value]="pokemon?.name">
                         {{ pokemon?.name }}
