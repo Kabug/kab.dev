@@ -196,7 +196,7 @@ export class PokedleComponent {
             this.gameState = gameState;
           }
           break;
-          
+
         default:
           break;
       }
@@ -245,7 +245,7 @@ export class PokedleComponent {
       this.dataSource.data = [];
       this.dataSource._updateChangeSubscription();
       localStorage.setItem("gameState", this.GAME_STATE.START);
-      localStorage.remove("correctlyGuessed");
+      localStorage.removeItem("correctlyGuessed");
     } else {
       let previousGuesses = JSON.parse(
         localStorage.getItem("guesses") || "null"
