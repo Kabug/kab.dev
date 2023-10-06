@@ -165,8 +165,8 @@ export class PokedleComponent {
       this.onPokeInput();
     });
 
-    this.todaysPokemon = this.getRandomPokemon(this.currentDate);
     const currentDate = new Date(this.currentDate);
+    this.todaysPokemon = this.getRandomPokemon(this.currentDate);
 
     // Calculate yesterday's date by subtracting one day (24 hours)
     const yesterdaysDate = new Date(
@@ -199,7 +199,6 @@ export class PokedleComponent {
       ? new Date(savedDate).toISOString().split("T")[0]
       : null;
     const currentDateFormatted = this.currentDate.split("T")[0];
-
     if (savedDateFormatted !== currentDateFormatted) {
       localStorage.removeItem("guesses");
 
@@ -208,10 +207,7 @@ export class PokedleComponent {
       this.dataSource.data = [];
       this.dataSource._updateChangeSubscription();
       localStorage.setItem("gameState", this.GAME_STATE.START);
-      localStorage.setItem(
-        "correctlyGuessed",
-        JSON.stringify(this.correctlyGuessed)
-      );
+      localStorage.remove("correctlyGuessed");
     } else {
       let previousGuesses = JSON.parse(
         localStorage.getItem("guesses") || "null"
