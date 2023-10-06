@@ -367,8 +367,7 @@ export class PokedleComponent {
           lastCorrectDate,
           this.currentDate
         );
-
-        if (this.currentStreak > 1 && daysDifference === 1) {
+        if (daysDifference === 1) {
           this.currentStreak += 1;
         } else {
           this.currentStreak = 1;
