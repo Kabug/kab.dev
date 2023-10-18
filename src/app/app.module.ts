@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule as MatProgressSpinnerModule } from "@angular/m
 import { LayoutModule } from "@angular/cdk/layout";
 import { MatDialogModule as MatDialogModule } from "@angular/material/dialog";
 import { MatButtonModule as MatButtonModule } from '@angular/material/button';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -37,7 +38,8 @@ import { GraphQLModule } from './graphql.module';
     LayoutModule,
     MatDialogModule,
     MatButtonModule,
-    GraphQLModule
+    GraphQLModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent],

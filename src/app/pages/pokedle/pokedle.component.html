@@ -32,12 +32,17 @@
     </div>
     <div class="inner-container pokedex-container">
         <div class="inner-container pokedex-title-container">
-            <img class="title" src="../../assets/images/pokedex.png" />
+            <div class="pokedex-title-item">
+                <img class="title" src="../../assets/images/pokedex.png" />
+            </div>
+            <div class="pokedex-title-item">
+                <mat-slide-toggle class="custom-slide-toggle" [checked]="isPokemonHidden" (change)="togglePokemonVisibility()"><span class="pokedex-slider-text">Hide Pokemon</span></mat-slide-toggle>
+            </div>
         </div>
         <div class="pokedex-screens-container">
             <div class="inner-container pokedex-inner-container">
                 <div class="sprite-container">
-                    <app-pokemon-card *ngFor="let pokemon of allPokemon" [pokemon]="pokemon" [correctlyGuessed]="correctlyGuessed"
+                    <app-pokemon-card *ngFor="let pokemon of allPokemon" [pokemon]="pokemon" [correctlyGuessed]="correctlyGuessed" [isPokemonHidden]="isPokemonHidden"
                         (hoverEvent)="onChildHover($event)" (clickEvent)="onChildClick($event)"></app-pokemon-card>
                 </div>
             </div>

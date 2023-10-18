@@ -9,7 +9,7 @@ $green1: #C6DE54;
 $green2: #001100;
 
 .container {
-  @media #{$lg}, #{$xl}, #{$md} {
+  @media #{$lg}, #{$xl} {
     display: flex;
   }
   th, input, mat-label {
@@ -40,10 +40,22 @@ $green2: #001100;
   }
 
   .pokedex-title-container {
+    justify-content: space-between;
     background-color: $red1;
 
     .title {
       max-width: 100px;
+    }
+
+    .pokedex-title-item {
+      display: flex;
+      align-items: center;
+      
+      .pokedex-slider-text {
+        font-size: $body;
+        font-family: 'digital', sans-serif;
+        font-weight: bold;
+      }
     }
   }
 
@@ -54,7 +66,7 @@ $green2: #001100;
   .pokedex-stats-container {
     min-width: 100px;
     max-width: 200px;
-    @media #{$lg}, #{$xl}, #{$md} {
+    @media #{$lg}, #{$xl} {
       min-width: 200px;
     }
     width: 100%;
@@ -70,7 +82,7 @@ $green2: #001100;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
     rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
     min-height: 360px;
-    @media #{$lg}, #{$xl}, #{$md} {
+    @media #{$lg}, #{$xl} {
       min-height: 460px;
     }
 
@@ -78,13 +90,13 @@ $green2: #001100;
       word-break: break-word;
       margin: 5px;
       font-size: 20px;
-      @media #{$lg}, #{$xl}, #{$md} {
+      @media #{$lg}, #{$xl} {
         font-size: $header;
       }
 
       &-description {
         font-size: 16px;
-        @media #{$lg}, #{$xl}, #{$md} {
+        @media #{$lg}, #{$xl} {
           font-size: 20px;
         }
       }
@@ -102,7 +114,7 @@ $green2: #001100;
     flex-direction: column;
     padding: 0;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    @media #{$lg}, #{$xl}, #{$md} {
+    @media #{$lg}, #{$xl} {
       margin-bottom: 20px;
     }
     ::-webkit-scrollbar {
@@ -152,7 +164,7 @@ $green2: #001100;
     padding: 0;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     display: block;
-    @media #{$lg}, #{$xl}, #{$md} {
+    @media #{$lg}, #{$xl} {
       display: flex;
     }
   }
@@ -245,9 +257,17 @@ $green2: #001100;
 }
 
 ::ng-deep .mat-focused .mdc-floating-label {
-  /*change color of label*/
   color: $red2 !important;
 }
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
+  background-color: $blue1;
+}
+
+::ng-deep .mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+  background-color: $blue1 !important;
+}
+
 .pokeball {
   &:hover {
     cursor: pointer;

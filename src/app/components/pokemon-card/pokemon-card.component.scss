@@ -5,10 +5,14 @@
   transition: filter 0.5s;
 }
 
+.hidden {
+  display: none;
+}
+
 img {
   max-width: 48px;
 
-  @media #{$lg}, #{$xl}, #{$md} { 
+  @media #{$lg}, #{$xl} { 
     max-width: 72px;
   }
 }

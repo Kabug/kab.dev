@@ -35,8 +35,10 @@ export class PokemonCardComponent {
     description: ""
   };
 
-  @Input() pokemon: any; // Input property to receive Pokemon data from parent component
+  @Input() pokemon: any;
   @Input() correctlyGuessed!: PokemonStats;
+  @Input() isPokemonHidden = true;
+
   @Output() hoverEvent = new EventEmitter<PokemonStats>();
   @Output() clickEvent = new EventEmitter<PokemonStats>();
 
@@ -48,11 +50,11 @@ export class PokemonCardComponent {
   };
   hidden = false;
 
-  ngOnInit() {
-    this.pokemonStats = this.mapPokemon(this.pokemon);
-  }
-
   ngOnChanges(changes: SimpleChanges) {
+    if (changes.pokemon) {
+      this.pokemonStats = this.mapPokemon(this.pokemon);
+    }
+
     if (changes.correctlyGuessed && changes.correctlyGuessed.currentValue) {
       this.checkIfStillValid();
     }

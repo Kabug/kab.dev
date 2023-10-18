@@ -135,7 +135,7 @@ export class PokedleComponent {
   maxGuesses = 8;
   loading = false;
   customColor = "red";
-  currentDate = new Date().toISOString();
+  currentDate = new Date();
   displayedColumns: string[] = [
     "image",
     "type1",
@@ -146,6 +146,7 @@ export class PokedleComponent {
     "weight",
     "stats",
   ];
+  isPokemonHidden = true;
 
   dataSource: MatTableDataSource<PokemonStats> =
     new MatTableDataSource<PokemonStats>();
@@ -201,14 +202,12 @@ export class PokedleComponent {
           break;
       }
     });
-    
 
-    const currentDate = new Date(this.currentDate);
-    this.todaysPokemon = this.getRandomPokemon(this.currentDate);
+    this.todaysPokemon = this.getRandomPokemon(this.currentDate.toISOString());
 
     // Calculate yesterday's date by subtracting one day (24 hours)
     const yesterdaysDate = new Date(
-      currentDate.getTime() - 24 * 60 * 60 * 1000
+      this.currentDate.getTime() - 24 * 60 * 60 * 1000
     );
     this.yesterdaysPokemon = this.getRandomPokemon(
       yesterdaysDate.toISOString()
@@ -236,11 +235,11 @@ export class PokedleComponent {
     const savedDateFormatted = savedDate
       ? new Date(savedDate).toISOString().split("T")[0]
       : null;
-    const currentDateFormatted = this.currentDate.split("T")[0];
+    const currentDateFormatted = this.currentDate.toISOString().split("T")[0];
     if (savedDateFormatted !== currentDateFormatted) {
       localStorage.removeItem("guesses");
 
-      localStorage.setItem("savedDate", this.currentDate);
+      localStorage.setItem("savedDate", this.currentDate.toISOString());
 
       this.dataSource.data = [];
       this.dataSource._updateChangeSubscription();
@@ -419,7 +418,7 @@ export class PokedleComponent {
         localStorage.setItem("maxStreak", this.currentStreak.toString());
       }
       localStorage.setItem("currentStreak", this.currentStreak.toString());
-      localStorage.setItem("lastCorrectDate", this.currentDate);
+      localStorage.setItem("lastCorrectDate", this.currentDate.toISOString());
       localStorage.setItem("gameState", this.GAME_STATE.WIN);
     } else if (
       this.dataSource?.data.length > this.maxGuesses - 1 ||
@@ -604,5 +603,9 @@ export class PokedleComponent {
   onChildClick(pokemon: PokemonStats) {
     this.hoveredPokemon = pokemon;
     this.pokeInputControl.setValue(pokemon.name);
+  }
+
+  togglePokemonVisibility() {
+    this.isPokemonHidden = !this.isPokemonHidden;
   }
 }

@@ -1,14 +1,17 @@
-<ng-container *ngIf="!imageErrors.imageError1; else elseBlock1">
-    <img src="https://img.pokemondb.net/sprites/home/normal/1x/{{pokemonStats.displayName}}.png"
-        (error)="handleImageError('imageError1')" [class.invisible]="hidden"
-        alt="{{pokemonStats.displayName}}" title="{{pokemonStats.displayName}}"
-        (mouseenter)="onMouseEnter()" />
-</ng-container>
-<ng-template #elseBlock1>
-    <ng-container *ngIf="!imageErrors.imageError2;">
-        <img src="https://img.pokemondb.net/sprites/home/normal/1x/{{pokemonStats.species}}.png"
-        (error)="handleImageError('imageError2')" [class.invisible]="hidden"
-        alt="{{pokemonStats.species}}" title="{{pokemonStats.species}}"
-        (mouseenter)="onMouseEnter()" />
+<ng-container >
+    <ng-container *ngIf="!imageErrors.imageError1; else elseBlock1">
+        <img 
+            src="https://img.pokemondb.net/sprites/home/normal/1x/{{pokemonStats.displayName}}.png"
+            (error)="handleImageError('imageError1')" [class.invisible]="hidden" [class.hidden]="isPokemonHidden && hidden"
+            alt="{{pokemonStats.displayName}}" title="{{pokemonStats.displayName}}"
+            (mouseenter)="onMouseEnter()" />
     </ng-container>
-</ng-template>
+    <ng-template #elseBlock1>
+        <ng-container *ngIf="!imageErrors.imageError2 && (!hidden && isPokemonHidden)">
+            <img src="https://img.pokemondb.net/sprites/home/normal/1x/{{pokemonStats.species}}.png"
+            (error)="handleImageError('imageError2')" [class.invisible]="hidden" [class.hidden]="isPokemonHidden && hidden"
+            alt="{{pokemonStats.species}}" title="{{pokemonStats.species}}"
+            (mouseenter)="onMouseEnter()" />
+        </ng-container>
+    </ng-template>
+</ng-container>
