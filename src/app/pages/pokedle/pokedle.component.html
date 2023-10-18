@@ -1,5 +1,8 @@
 <div class="container">
-    <div class="inner-container title-container">
+    <div class="pokedle__how-to-play-icon" (click)="openHowToPlayDialog()" >
+        <mat-icon class="pokedle__how-to-play-icon" aria-label="How to Play">help</mat-icon>
+    </div>
+    <div class="inner-container title-container" >
         <img class="title"
             src="../../assets/images/pokedle.png" />
     </div>
@@ -114,9 +117,9 @@
             <ng-container matColumnDef="abilities">
                 <th mat-header-cell *matHeaderCellDef>Abilities</th>
                 <td mat-cell *matCellDef="let element"
-                    [class.correct]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ArrayComparisonResult.Same"
-                    [class.wrong]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ArrayComparisonResult.NoCommonValues"
-                    [class.partial]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ArrayComparisonResult.CommonValues">
+                    [class.correct]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ARRAY_COMPARISON_RESULT.SAME"
+                    [class.wrong]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ARRAY_COMPARISON_RESULT.NO_COMMON_VALUES"
+                    [class.partial]="compareArrays(element.abilities, todaysPokemon.abilities, 'pokemon_v2_ability', 'name') === ARRAY_COMPARISON_RESULT.COMMON_VALUES">
                     <ng-container *ngFor="let ability of element.abilities; let last = last">
                         {{ ability?.pokemon_v2_ability?.name }}<span *ngIf="!last">, </span>
                     </ng-container>
@@ -126,9 +129,9 @@
             <ng-container matColumnDef="egggroup">
                 <th mat-header-cell *matHeaderCellDef>Egggroup</th>
                 <td mat-cell *matCellDef="let element"
-                    [class.correct]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ArrayComparisonResult.Same"
-                    [class.wrong]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ArrayComparisonResult.NoCommonValues"
-                    [class.partial]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ArrayComparisonResult.CommonValues">
+                    [class.correct]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ARRAY_COMPARISON_RESULT.SAME"
+                    [class.wrong]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ARRAY_COMPARISON_RESULT.NO_COMMON_VALUES"
+                    [class.partial]="compareArrays(element.egggroup, todaysPokemon.egggroup, 'pokemon_v2_egggroup', 'name') === ARRAY_COMPARISON_RESULT.COMMON_VALUES">
                     <ng-container *ngFor="let egggroup of element.egggroup; let last = last">
                         {{ egggroup?.pokemon_v2_egggroup?.name }}<span *ngIf="!last">, </span>
                     </ng-container>
@@ -179,6 +182,36 @@
         </p>
         <p>Current Streak: {{currentStreak}}</p>
         <p>Highest Streak: {{maxStreak}}</p>
+        <mat-dialog-actions align="end" class="button-container">
+            <button mat-raised-button matDialogClose class="button">Dismiss</button>
+        </mat-dialog-actions>
+    </div>
+</ng-template>
+
+<ng-template #howToPlayDialog>
+    <div class="dialog-container">
+        <h2 matDialogTitle>How to Play Pokedle</h2>
+        <mat-dialog-content class="dialog-text">
+            <h3><strong>1. Select Pokémon</strong></h3>
+            <p>To select a Pokémon, click on the image in the Pokédex or enter its name into the search box and hit enter. This will reveal the Pokémon's attributes and help you determine if it matches the "Pokémon of the Day."</p>
+
+            <h3><strong>2. Search for Pokémon</strong></h3>
+            <p>You can search for a Pokémon by entering its name and hitting enter or clicking on the Pokéball icon.</p>
+
+            <h3><strong>3. Match Attributes</strong></h3>
+            <p>After selecting a Pokémon, the game checks if any of its attributes match the "Pokémon of the Day." Here's what the colors mean:</p>
+            <ul>
+                <li><strong class="wrong">Red:</strong> No attributes match.</li>
+                <li><strong class="partial">Orange:</strong> Some attributes match.</li>
+                <li><strong class="correct">Green:</strong> All attributes match.</li>
+            </ul>
+
+            <h3><strong>4. Guessing Game</strong></h3>
+            <p>You have eight chances to guess which Pokémon is the "Pokémon of the Day." Each correct guess will automatically filter out Pokémon that don't match. If you get a "Green," it means all attributes match, and all non-matching Pokémon will be ruled out.</p>
+
+            <h3><strong>5. Progress Tracking</strong></h3>
+            <p>The game keeps track of your current and maximum streak. Try to keep your streak up and brag to your friends!"</p>
+        </mat-dialog-content>
         <mat-dialog-actions align="end" class="button-container">
             <button mat-raised-button matDialogClose class="button">Dismiss</button>
         </mat-dialog-actions>

@@ -1,69 +1,16 @@
 import { Component, TemplateRef, ViewChild } from "@angular/core";
-import { PokeService } from "src/app/services/poke.service";
 import { FormControl } from "@angular/forms";
 import { MatTableDataSource as MatTableDataSource } from "@angular/material/table";
 import { MatDialog as MatDialog } from "@angular/material/dialog";
 import { firstValueFrom } from "rxjs";
 import data from "@root/pokedata.json";
 import { DataService } from "../../services/data.service.ts";
+import { PokemonStats, Abilities, EggGroups }  from "src/app/services/poke.service";
 
-// Name
-// Type1
-// Type2
-// Ability Total
-// Forms
-// Egg groups
-// Weight
-// Stats
-
-// Figure out gen la
-// Make colourblind friendly
-
-//Need to move this over to services later
-export interface PokemonStats {
-  displayName: string;
-  name: string;
-  image: string;
-  type1: string;
-  type2: string;
-  color: string;
-  abilities: Abilities[];
-  egggroup: EggGroups[];
-  weight: number;
-  stats: number;
-  species: string;
-  description: string;
-}
-
-export interface Abilities {
-  ability_id: number;
-  pokemon_id: number;
-  pokemon_v2_ability: Ability;
-}
-
-export interface Ability {
-  name: string;
-}
-
-export interface EggGroups {
-  pokemon_v2_pokemonegggroups: EggGroup[];
-}
-
-export interface EggGroup {
-  name: string;
-}
-
-export interface AllPokemonPage {
-  count: number;
-  next: number | undefined;
-  previous: number | undefined;
-  results: [];
-}
-
-const ArrayComparisonResult = {
-  Same: "Same",
-  CommonValues: "CommonValues",
-  NoCommonValues: "NoCommonValues",
+const ARRAY_COMPARISON_RESULT  = {
+  SAME: "Same",
+  COMMON_VALUES: "CommonValues",
+  NO_COMMON_VALUES: "NoCommonValues",
 };
 
 const GAME_STATE = {
@@ -71,6 +18,16 @@ const GAME_STATE = {
   WIN: "Win",
   LOSE: "Lose",
 };
+
+const STORAGE_KEYS  = {
+  MAX_STREAK: "maxStreak",
+  CURRENT_STREAK: "currentStreak",
+  SAVED_DATE: "savedDate",
+  GUESSES: "guesses",
+  GAME_STATE: "gameState",
+  CORRECTLY_GUESSED: "correctlyGuessed",
+  LAST_CORRECT: "lastCorrectDate"
+}
 
 @Component({
   selector: "pokedle",
@@ -80,10 +37,27 @@ const GAME_STATE = {
 export class PokedleComponent {
   @ViewChild("endDialog")
   endDialog!: TemplateRef<any>;
-  pokeInputControl = new FormControl("");
+  @ViewChild("howToPlayDialog")
+  howToPlayDialog!: TemplateRef<any>;
 
-  public ArrayComparisonResult = ArrayComparisonResult;
-  public GAME_STATE = GAME_STATE;
+  pokeInputControl = new FormControl("");
+  displayedColumns: string[] = [
+    "image",
+    "type1",
+    "type2",
+    "color",
+    "abilities",
+    "egggroup",
+    "weight",
+    "stats",
+  ];
+  dataSource: MatTableDataSource<PokemonStats> =
+    new MatTableDataSource<PokemonStats>();
+
+  GAME_STATE = GAME_STATE;
+  ARRAY_COMPARISON_RESULT = ARRAY_COMPARISON_RESULT;
+  STORAGE_KEYS = STORAGE_KEYS;
+
   gameState = this.GAME_STATE.START;
   pokemonData: any;
   allPokemon: any;
@@ -136,41 +110,36 @@ export class PokedleComponent {
   loading = false;
   customColor = "red";
   currentDate = new Date();
-  displayedColumns: string[] = [
-    "image",
-    "type1",
-    "type2",
-    "color",
-    "abilities",
-    "egggroup",
-    "weight",
-    "stats",
-  ];
   isPokemonHidden = true;
-
-  dataSource: MatTableDataSource<PokemonStats> =
-    new MatTableDataSource<PokemonStats>();
-
   maxStreak = 0;
   currentStreak = 0;
 
   constructor(
-    private pokeService: PokeService,
     private dialog: MatDialog,
     private dataService: DataService
   ) {}
 
   async ngOnInit() {
     await this.fetchData();
+    this.setupEventListeners();
+    this.initializePokemon();
+    this.loadMaxStreak();
+    this.loadCurrentStreak();
+    this.handleLocalStorage();
+  }
+
+  setupEventListeners() {
+
     this.pokeInputControl.valueChanges.subscribe((newValue) => {
       this.onPokeInput();
     });
+
     window.addEventListener("storage", (event: StorageEvent) => {
       const key = event.key;
       const newValue = event.newValue;
     
       switch (key) {
-        case "guesses":
+        case this.STORAGE_KEYS.GUESSES:
           const previousGuesses = JSON.parse(newValue || "null");
           if (Array.isArray(previousGuesses) && previousGuesses.length > 0) {
             previousGuesses.forEach((pokemon) => {
@@ -184,14 +153,14 @@ export class PokedleComponent {
           }
           break;
     
-        case "correctlyGuessed":
+        case this.STORAGE_KEYS.CORRECTLY_GUESSED:
           const correctlyGuessed = JSON.parse(newValue || "null");
           if (correctlyGuessed) {
             this.correctlyGuessed = correctlyGuessed;
           }
           break;
     
-        case "gameState":
+        case this.STORAGE_KEYS.GAME_STATE:
           const gameState = newValue;
           if (gameState) {
             this.gameState = gameState;
@@ -202,7 +171,13 @@ export class PokedleComponent {
           break;
       }
     });
+  
+    this.pokeInputControl.valueChanges.subscribe((newValue) => {
+      this.onPokeInput();
+    });
+  }
 
+  initializePokemon() {
     this.todaysPokemon = this.getRandomPokemon(this.currentDate.toISOString());
 
     // Calculate yesterday's date by subtracting one day (24 hours)
@@ -213,68 +188,77 @@ export class PokedleComponent {
       yesterdaysDate.toISOString()
     );
     this.hoveredPokemon = this.createPokemonObj(this.allPokemon?.[0]);
+  }
 
-    const maxStreakString = localStorage.getItem("maxStreak");
+  loadMaxStreak() {
+    const maxStreakString = localStorage.getItem(this.STORAGE_KEYS.MAX_STREAK);
     if (maxStreakString !== null) {
       const parsedMaxStreak = parseInt(maxStreakString, 10);
       if (!isNaN(parsedMaxStreak)) {
         this.maxStreak = parsedMaxStreak;
       }
     }
+  }
 
-    const currentStreakString = localStorage.getItem("currentStreak");
+  loadCurrentStreak() {
+    const currentStreakString = localStorage.getItem(this.STORAGE_KEYS.CURRENT_STREAK);
     if (currentStreakString !== null) {
       const parsedCurrentStreak = parseInt(currentStreakString, 10);
       if (!isNaN(parsedCurrentStreak)) {
         this.currentStreak = parsedCurrentStreak;
       }
     }
+  }
 
-    const savedDate = localStorage.getItem("savedDate");
-
+  handleLocalStorage() {
+    const savedDate = localStorage.getItem(this.STORAGE_KEYS.SAVED_DATE);
     const savedDateFormatted = savedDate
       ? new Date(savedDate).toISOString().split("T")[0]
       : null;
     const currentDateFormatted = this.currentDate.toISOString().split("T")[0];
+  
     if (savedDateFormatted !== currentDateFormatted) {
-      localStorage.removeItem("guesses");
-
-      localStorage.setItem("savedDate", this.currentDate.toISOString());
-
-      this.dataSource.data = [];
-      this.dataSource._updateChangeSubscription();
-      localStorage.setItem("gameState", this.GAME_STATE.START);
-      localStorage.removeItem("correctlyGuessed");
+      this.resetLocalStorage();
     } else {
-      let previousGuesses = JSON.parse(
-        localStorage.getItem("guesses") || "null"
-      );
+      this.loadPreviousGuesses();
+      this.loadCorrectlyGuessed();
+      this.loadGameState();
+    }
+  }
 
-      if (Array.isArray(previousGuesses) && previousGuesses.length > 0) {
-        previousGuesses.forEach((pokemon) => {
-          this.allPokemon = this.allPokemon.filter(
-            (pokemonObj: { name: any }) => pokemonObj.name !== pokemon?.name
-          );
+  resetLocalStorage() {
+    localStorage.removeItem(this.STORAGE_KEYS.GUESSES);
+    localStorage.setItem(this.STORAGE_KEYS.SAVED_DATE, this.currentDate.toISOString());
+  
+    this.dataSource.data = [];
+    this.dataSource._updateChangeSubscription();
+    localStorage.setItem(this.STORAGE_KEYS.GAME_STATE, this.GAME_STATE.START);
+    localStorage.removeItem(this.STORAGE_KEYS.CORRECTLY_GUESSED);
+  }
 
-          this.extractSimilarValues(pokemon);
-        });
+  loadPreviousGuesses() {
+    const previousGuesses = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.GUESSES) || "null");
+    if (Array.isArray(previousGuesses) && previousGuesses.length > 0) {
+      previousGuesses.forEach((pokemon) => {
+        this.allPokemon = this.allPokemon.filter((pokemonObj: { name: any }) => pokemonObj.name !== pokemon?.name);
+        this.extractSimilarValues(pokemon);
+      });
+      this.dataSource.data = previousGuesses;
+      this.dataSource._updateChangeSubscription();
+    }
+  }
 
-        this.dataSource.data = previousGuesses;
-        this.dataSource._updateChangeSubscription();
-      }
-      let correctlyGuessed = JSON.parse(
-        localStorage.getItem("correctlyGuessed") || "null"
-      );
+  loadCorrectlyGuessed() {
+    const correctlyGuessed = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.CORRECTLY_GUESSED) || "null");
+    if (correctlyGuessed) {
+      this.correctlyGuessed = correctlyGuessed;
+    }
+  }
 
-      if (correctlyGuessed) {
-        this.correctlyGuessed = correctlyGuessed;
-      }
-
-      let gamestate = localStorage.getItem("gameState");
-
-      if (gamestate) {
-        this.gameState = gamestate;
-      }
+  loadGameState() {
+    const gamestate = localStorage.getItem(this.STORAGE_KEYS.GAME_STATE);
+    if (gamestate) {
+      this.gameState = gamestate;
     }
   }
 
@@ -288,7 +272,7 @@ export class PokedleComponent {
       if (!data) {
         return;
       }
-      console.log("resorting to backup");
+      console.error("resorting to backup");
       this.allPokemon = [];
       // @ts-ignore
       this.filterPokemon(data?.data?.pokemon_v2_pokemon);
@@ -339,8 +323,6 @@ export class PokedleComponent {
     return this.createPokemonObj(this.allPokemon?.[randomNum]);
   }
 
-  // Make a better search later
-  // Make just filter by the values entered counting the order
   onPokeInput() {
     this.suggestedPokemons = this.allPokemon?.filter(
       (pokemon: { name: (string | undefined)[] }) =>
@@ -363,7 +345,7 @@ export class PokedleComponent {
     ) {
       this.gameState = GAME_STATE.LOSE;
       this.openDialog();
-      localStorage.setItem("currentStreak", "0");
+      localStorage.setItem(this.STORAGE_KEYS.CURRENT_STREAK, "0");
       return;
     }
     let pokemon: { name: string } | undefined = undefined;
@@ -382,7 +364,7 @@ export class PokedleComponent {
     const formatPokemon = this.createPokemonObj(pokemon);
     this.dataSource?.data.unshift(formatPokemon);
     this.dataSource._updateChangeSubscription();
-    localStorage.setItem("guesses", JSON.stringify(this.dataSource?.data));
+    localStorage.setItem(this.STORAGE_KEYS.GUESSES, JSON.stringify(this.dataSource?.data));
 
     this.allPokemon = this.allPokemon.filter(
       (pokemonObj: { name: any }) => pokemonObj.name !== pokemon?.name
@@ -415,19 +397,19 @@ export class PokedleComponent {
 
       if (this.maxStreak < this.currentStreak) {
         this.maxStreak = this.currentStreak;
-        localStorage.setItem("maxStreak", this.currentStreak.toString());
+        localStorage.setItem(this.STORAGE_KEYS.MAX_STREAK, this.currentStreak.toString());
       }
-      localStorage.setItem("currentStreak", this.currentStreak.toString());
-      localStorage.setItem("lastCorrectDate", this.currentDate.toISOString());
-      localStorage.setItem("gameState", this.GAME_STATE.WIN);
+      localStorage.setItem(this.STORAGE_KEYS.CURRENT_STREAK, this.currentStreak.toString());
+      localStorage.setItem(this.STORAGE_KEYS.LAST_CORRECT, this.currentDate.toISOString());
+      localStorage.setItem(this.STORAGE_KEYS.GAME_STATE, this.GAME_STATE.WIN);
     } else if (
       this.dataSource?.data.length > this.maxGuesses - 1 ||
       this.gameState === this.GAME_STATE.LOSE
     ) {
       this.gameState = GAME_STATE.LOSE;
       this.openDialog();
-      localStorage.setItem("currentStreak", "0");
-      localStorage.setItem("gameState", this.GAME_STATE.LOSE);
+      localStorage.setItem(this.STORAGE_KEYS.CURRENT_STREAK, "0");
+      localStorage.setItem(this.STORAGE_KEYS.GAME_STATE, this.GAME_STATE.LOSE);
       return;
     }
   }
@@ -474,7 +456,7 @@ export class PokedleComponent {
         this.todaysPokemon.abilities,
         "pokemon_v2_ability",
         "name"
-      ) === ArrayComparisonResult.Same
+      ) === ARRAY_COMPARISON_RESULT.SAME
     ) {
       abilities = obj.abilities;
     }
@@ -485,7 +467,7 @@ export class PokedleComponent {
         this.todaysPokemon.egggroup,
         "pokemon_v2_egggroup",
         "name"
-      ) === ArrayComparisonResult.Same
+      ) === ARRAY_COMPARISON_RESULT.SAME
     ) {
       egggroup = obj.egggroup;
     }
@@ -554,7 +536,7 @@ export class PokedleComponent {
     }
     this.correctlyGuessed = { ...this.correctlyGuessed };
     localStorage.setItem(
-      "correctlyGuessed",
+      this.STORAGE_KEYS.CORRECTLY_GUESSED,
       JSON.stringify(this.correctlyGuessed)
     );
   }
@@ -567,7 +549,7 @@ export class PokedleComponent {
   ) {
     // Check if both arrays have the same objects in the same order
     if (JSON.stringify(array1) === JSON.stringify(array2)) {
-      return ArrayComparisonResult.Same;
+      return ARRAY_COMPARISON_RESULT.SAME;
     }
 
     // Check if any object in array1 exists in array2 based on the primary comparison
@@ -581,15 +563,19 @@ export class PokedleComponent {
     );
 
     if (commonValuesExist) {
-      return ArrayComparisonResult.CommonValues;
+      return ARRAY_COMPARISON_RESULT.COMMON_VALUES;
     }
 
     // If none of the above conditions are met, there are no common values
-    return ArrayComparisonResult.NoCommonValues;
+    return ARRAY_COMPARISON_RESULT.NO_COMMON_VALUES;
   }
 
   openDialog(): void {
     this.dialog.open(this.endDialog);
+  }
+  
+  openHowToPlayDialog(): void {
+    this.dialog.open(this.howToPlayDialog);
   }
 
   reloadPage() {

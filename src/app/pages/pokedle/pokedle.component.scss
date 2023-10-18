@@ -9,13 +9,6 @@ $green1: #C6DE54;
 $green2: #001100;
 
 .container {
-  @media #{$lg}, #{$xl} {
-    display: flex;
-  }
-  th, input, mat-label {
-    font-family: 'digital', sans-serif;
-  }
-
   min-height: 100vh;
   background-color: khaki;
   font-family: 'digital', sans-serif;
@@ -24,6 +17,23 @@ $green2: #001100;
   gap: 10px;
   align-items: center;
   padding-bottom: 20px;
+
+  @media #{$lg}, #{$xl} {
+    display: flex;
+  }
+
+  th, input, mat-label {
+    font-family: 'digital', sans-serif;
+  }
+
+  .pokedle__how-to-play-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: $blue1;
+  }
 
   .inner-container {
     display: flex;
@@ -202,20 +212,6 @@ $green2: #001100;
       color: white;
       font-size: $header;
     }
-
-    .correct {
-      background-color: lightgreen;
-    }
-
-
-    .wrong {
-      background-color: lightcoral;
-    }
-
-    
-    .partial {
-      background-color: lightsalmon;
-    }
     td {
       font-size: $body;
       text-transform: capitalize;
@@ -250,6 +246,38 @@ $green2: #001100;
   img {
     max-width: 300px;
   }
+
+  li {
+    list-style: none;
+
+    .red {
+      background-color: red;
+    }
+  }
+
+  li::before {
+    content: "";
+    background-image: url('../../../assets/images/pokeball.svg');
+    background-size: 15px 15px;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.correct {
+  background-color: lightgreen;
+}
+
+.wrong {
+  background-color: lightcoral;
+}
+
+.partial {
+  background-color: lightsalmon;
 }
 
 .header {

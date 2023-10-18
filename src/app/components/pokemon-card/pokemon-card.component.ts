@@ -6,7 +6,7 @@ import {
   HostListener,
   SimpleChanges,
 } from "@angular/core";
-import { PokemonStats } from "src/app/pages/pokedle/pokedle.component";
+import { PokemonStats }  from "src/app/services/poke.service";
 
 const ArrayComparisonResult = {
   Same: "Same",

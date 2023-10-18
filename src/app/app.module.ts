@@ -21,6 +21,8 @@ import { PokedleComponent } from "./pages/pokedle/pokedle.component";
 import { PokemonCardComponent } from "./components/pokemon-card/pokemon-card.component";
 import { GraphQLModule } from './graphql.module';
 
+import { PokeService } from "./services/poke.service";
+
 @NgModule({
   declarations: [AppComponent, PokedleComponent, PokemonCardComponent],
   imports: [
@@ -41,7 +43,7 @@ import { GraphQLModule } from './graphql.module';
     GraphQLModule,
     MatSlideToggleModule
   ],
-  providers: [],
+  providers: [PokeService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
